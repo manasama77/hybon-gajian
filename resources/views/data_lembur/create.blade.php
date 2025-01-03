@@ -62,7 +62,7 @@
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             required>
                             @foreach ($karyawans as $karyawan)
-                                <option value="{{ $karyawan->id }}">
+                                <option @selected(old('karyawan_id') == $karyawan->id) value="{{ $karyawan->id }}">
                                     {{ $karyawan->name }}
                                 </option>
                             @endforeach
@@ -77,7 +77,7 @@
                             class="dark:text-white block mb-2 text-sm font-medium text-gray-900">From Date</label>
 
                         <input type="date" name="overtime_in_date" id="overtime_in_date" min="{{ $min_date }}"
-                            max="{{ $max_date }}"
+                            max="{{ $max_date }}" value="{{ old('overtime_in_date') }}"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('overtime_in_date') border-red-500 @enderror"
                             required />
 
@@ -91,6 +91,7 @@
                             class="dark:text-white block mb-2 text-sm font-medium text-gray-900">From Time</label>
 
                         <input type="time" name="overtime_in_time" id="overtime_in_time"
+                            value="{{ old('overtime_in_time') }}"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('overtime_in_time') border-red-500 @enderror"
                             required />
 
@@ -104,7 +105,7 @@
                             class="dark:text-white block mb-2 text-sm font-medium text-gray-900">To Date</label>
 
                         <input type="date" name="overtime_out_date" id="overtime_out_date" min="{{ $min_date }}"
-                            max="{{ $max_date }}"
+                            max="{{ $max_date }}" value="{{ old('overtime_out_date') }}"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('overtime_out_date') border-red-500 @enderror"
                             required />
 
@@ -118,6 +119,7 @@
                             class="dark:text-white block mb-2 text-sm font-medium text-gray-900">To Time</label>
 
                         <input type="time" name="overtime_out_time" id="overtime_out_time"
+                            value="{{ old('overtime_out_time') }}"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('overtime_out_time') border-red-500 @enderror"
                             required />
 

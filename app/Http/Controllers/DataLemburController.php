@@ -85,12 +85,13 @@ class DataLemburController extends Controller
             $overtime_in    = Carbon::parse($overtime_in_x);
             $overtime_out   = Carbon::parse($overtime_out_x);
 
-            $check = DataLembur::where('karyawan_id', operator: $request->karyawan_id)
+            $check = DataLembur::where(column: 'karyawan_id', operator: $request->karyawan_id)
                 ->whereDate('overtime_in', $overtime_in->toDateString())
+                ->whereIn('is_approved', [null, false])
                 ->first();
 
             if ($check) {
-                throw new Exception('Data kamu sudah mengisi data lembur hari ini.');
+                throw new Exception('Kamu sudah mengisi data lembur hari ini.');
             }
 
             $jam_lembur   = ceil(num: $overtime_in->diffInMinutes(date: $overtime_out) / 60);
@@ -112,7 +113,7 @@ class DataLemburController extends Controller
             return redirect()->route('data-lembur.index')->with('success', 'Data lembur berhasil disimpan.');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors($e->getMessage() . ' ' . $e->getLine())->withInput();
+            return redirect()->back()->withErrors($e->getMessage())->withInput();
         }
     }
 
