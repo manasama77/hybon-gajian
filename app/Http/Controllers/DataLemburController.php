@@ -87,7 +87,7 @@ class DataLemburController extends Controller
 
             $check = DataLembur::where(column: 'karyawan_id', operator: $request->karyawan_id)
                 ->whereDate('overtime_in', $overtime_in->toDateString())
-                ->whereIn('is_approved', [null, false])
+                ->whereIn('is_approved', values: [null, true])
                 ->first();
 
             if ($check) {
