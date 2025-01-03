@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/data-lembur', [DataLemburController::class, 'store'])->name('data-lembur.store');
     Route::get('/data-lembur/show', [DataLemburController::class, 'show'])->name('data-lembur.show');
     Route::post('/data-lembur/approve-reject', [DataLemburController::class, 'approve_reject'])->name('data-lembur.approve-reject');
+    Route::delete('/data-lembur/{data_lembur}', [DataLemburController::class, 'destroy'])->name('data-lembur.destroy');
 
     Route::get('/data-ijin', [DataIjinController::class, 'index'])->name('data-ijin.index');
     Route::get('/data-ijin/create', [DataIjinController::class, 'create'])->name('data-ijin.create');

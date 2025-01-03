@@ -146,7 +146,17 @@ class DataLemburController extends Controller
      */
     public function destroy(DataLembur $dataLembur)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $dataLembur->delete();
+
+            DB::commit();
+            return redirect()->route('data-lembur.index')->with('success', 'Data lembur deleted successfully !');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->getMessage() . ' ' . $e->getLine())->withInput();
+        }
     }
 
     public function approve_reject(Request $request)

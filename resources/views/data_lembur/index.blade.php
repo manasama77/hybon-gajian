@@ -24,6 +24,18 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                <div class="relative px-4 py-3 mt-4 text-red-700 bg-red-100 border border-red-400 rounded"
+                    role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <ul class="mt-3 text-sm text-red-600 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="dark:bg-gray-800 sm:rounded-lg overflow-hidden bg-white shadow-sm">
                 <div class="dark:text-gray-100 p-6 text-gray-900">
 
@@ -104,6 +116,19 @@
                                                         class="hover:text-white hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 me-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 px-3 py-2 mb-2 text-sm font-medium text-center text-red-700 border border-red-700 rounded-lg">
                                                         <i class="fas fa-times"></i>
                                                     </button>
+
+                                                    <form id="delete-form-{{ $data_lembur->id }}"
+                                                        action="{{ route('data-lembur.destroy', $data_lembur) }}"
+                                                        method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                    <button type="button"
+                                                        onclick="askDelete('delete-form-{{ $data_lembur->id }}')"
+                                                        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                                        <i class="fa-solid fa-trash me-2"></i>
+                                                        Delete
+                                                    </button>
                                                 @endif
                                             @endif
                                         </td>
@@ -183,6 +208,23 @@
                     }
                 });
 
+            }
+
+            function askDelete(formId) {
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: 'Data yang dihapus tidak dapat dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(formId).submit();
+                    }
+                });
             }
         </script>
     @endpush
