@@ -61,4 +61,9 @@ class TestController extends Controller
                 ]);
         }
     }
+
+    public function test()
+    {
+        return redirect()->route('data-lembur.index')->with('success', 'Data lembur berhasil disimpan.');
+    }
 }

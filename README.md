@@ -58,3 +58,6 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
     -   Penambahan filter pada menu Kehadiran & Lembur
     -   Pembuatan halaman Dashboard
     -   Penambahan fitur hapus data Kehadiran
+-   **Version 1.1.1**
+    -   Perbaikan bug lembur multiple submit
+    -   Perbaikan ijin tidak bisa di Approve atau reject karena masalah constraint

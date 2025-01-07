@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Karyawan;
-use App\Models\PeriodeCutoff;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->longText('keterangan');
             $table->string('lampiran')->nullable();
             $table->boolean('is_approved')->nullable();
-            $table->foreignIdFor(Karyawan::class, 'approved_by')->nullable()->constrained('karyawans');
+            $table->foreignIdFor(User::class, 'approved_by')->nullable()->constrained('users');
             $table->date('approved_at')->nullable();
             $table->timestamps();
         });

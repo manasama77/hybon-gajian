@@ -141,10 +141,10 @@ class DataKehadiranController extends Controller
             $underscore_name = str_replace(' ', '_', strtolower($request->user()->name));
             $path            = $request->file('foto')->store('foto_kehadiran_' . $underscore_name, 'public');
 
-            $image_manager = new ImageManager(new Driver());
-            $image_resize = $image_manager->read(public_path('storage/' . $path));
-            $image_resize->scale(height: 1000);
-            $image_resize->save(public_path('storage/' . $path));
+            // $image_manager = new ImageManager(new Driver());
+            // $image_resize = $image_manager->read(public_path('storage/' . $path));
+            // $image_resize->scale(height: 1000);
+            // $image_resize->save(public_path('storage/' . $path));
 
             $dt        = Carbon::now();
             $clock_in  = $dt->toTimeString();

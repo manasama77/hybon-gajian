@@ -121,10 +121,14 @@ class DataLemburController extends Controller
 
             $check = DataLembur::where(column: 'karyawan_id', operator: $request->karyawan_id)
                 ->whereDate('overtime_in', $overtime_in->toDateString())
-                ->whereIn('is_approved', values: [null, true])
+                ->where(function ($query) {
+                    $query->whereNull('is_approved')
+                        ->orWhere('is_approved', false);
+                })
                 ->first();
 
             if ($check) {
+                DB::rollBack();
                 return redirect()->route('data-lembur.index')->with('success', 'Data lembur berhasil disimpan.');
             }
 
