@@ -61,3 +61,5 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
 -   **Version 1.1.1**
     -   Perbaikan bug lembur multiple submit
     -   Perbaikan ijin tidak bisa di Approve atau reject karena masalah constraint
+-   **Version 1.1.2**
+    -   Lembur bisa dihapus setelah diapprove

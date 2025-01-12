@@ -7,5 +7,7 @@
         <a href="https://sistegra.id" target="_blank" class="hover:underline text-blue-600">
             Sistegra Emran Sentosa
         </a>
+
+        Version {{ config('app.version') }}
     </p>
 </footer>

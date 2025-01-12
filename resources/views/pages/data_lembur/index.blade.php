@@ -178,21 +178,20 @@
                                                                 <i class="fas fa-times"></i>
                                                             </button>
                                                         </div>
-
-                                                        <div>
-                                                            <form id="delete-form-{{ $data_lembur->id }}"
-                                                                action="{{ route('data-lembur.destroy', $data_lembur) }}"
-                                                                method="POST" class="inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                            </form>
-                                                            <button type="button"
-                                                                onclick="askDelete('delete-form-{{ $data_lembur->id }}')"
-                                                                class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-                                                                <i class="fa-solid fa-trash"></i>
-                                                            </button>
-                                                        </div>
                                                     @endif
+                                                    <div>
+                                                        <form id="delete-form-{{ $data_lembur->id }}"
+                                                            action="{{ route('data-lembur.destroy', $data_lembur) }}"
+                                                            method="POST" class="inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                        <button type="button"
+                                                            onclick="askDelete('delete-form-{{ $data_lembur->id }}')"
+                                                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </td>
                                         @endif
