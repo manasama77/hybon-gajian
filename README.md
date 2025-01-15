@@ -67,5 +67,6 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
     -   Dashboard berubah grid untuk desktop version dari grid 4 ke 2
     -   Dashboard Potongan Tidak Hadir dihilangkan, diganti menjadi Gaji Kehadiran
     -   Request Ijin To Date (tanggal akhir ijin) diberi batasan sesuai periode cutoff
+    -   Data Lembur penambahan filter status
     -   Karyawan dengan tipe gaji harian tidak dapat akses Request Ijin
     -   Perbaikan bug karyawan bisa akses halaman setup
