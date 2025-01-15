@@ -40,7 +40,7 @@
                 <div class="dark:text-gray-100 p-6 text-gray-900">
 
                     <div class="flex items-center justify-start max-w-full mb-4">
-                        <form action="{{ route('data-lembur.index') }}" method="GET" class="md:max-w-xl w-full">
+                        <form action="{{ route('data-lembur.index') }}" method="GET" class="md:max-w-3xl w-full">
                             <div class="flex gap-3">
                                 @if (auth()->user()->hasRole('admin'))
                                     <div>
@@ -74,6 +74,15 @@
                                                 {{ $b['year'] }}
                                             </option>
                                         @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <select id="lembur_status" name="lembur_status"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option @selected($lembur_status == 'all') value="all">Semua Status</option>
+                                        <option @selected($lembur_status == 'pending') value="pending">Pending</option>
+                                        <option @selected($lembur_status == 'approved') value="approved">Approved</option>
+                                        <option @selected($lembur_status == 'reject') value="reject">Reject</option>
                                     </select>
                                 </div>
                                 <div>

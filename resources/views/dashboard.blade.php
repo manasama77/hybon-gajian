@@ -55,7 +55,7 @@
 
         </div>
 
-        <div class="md:grid-cols-4 grid grid-cols-1 gap-3">
+        <div class="md:grid-cols-2 grid grid-cols-1 gap-3">
 
             <div x-data="{ showFull: false }">
                 <a href="#" @click.prevent="showFull = !showFull"
@@ -63,10 +63,10 @@
 
                     <div class="flex justify-between gap-3">
                         <h5 class="dark:text-white mb-2 text-2xl font-bold tracking-tight text-gray-900">
-                            <span x-show="showFull" id="potongan_absen">Rp.{{ $potongan_absen_show }}</span>
-                            <span x-show="!showFull" class="font-bold">Rp.{{ $potongan_absen_hide }}</span>
+                            <span x-show="showFull" class="font-bold">Rp.{{ $gaji_kehadiran_show }}</span>
+                            <span x-show="!showFull" class="font-bold">Rp.{{ $gaji_kehadiran_hide }}</span>
                             <p class="dark:text-gray-400 mt-2 text-sm font-normal text-gray-700">
-                                Potongan Absen<br />Bulan Aktif
+                                Gaji Kehadiran<br />Bulan Aktif
                             </p>
                         </h5>
 

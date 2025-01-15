@@ -20,9 +20,10 @@ class DataLemburController extends Controller
      */
     public function index(Request $request)
     {
-        $karyawan_id = $request->karyawan_id ?? null;
-        $bulan       = $request->bulan ?? null;
-        $tahun       = $request->tahun ?? null;
+        $karyawan_id   = $request->karyawan_id ?? null;
+        $bulan         = $request->bulan ?? null;
+        $tahun         = $request->tahun ?? null;
+        $lembur_status = $request->lembur_status ?? 'all';
 
         $data_lemburs = DataLembur::query();
 
@@ -42,6 +43,14 @@ class DataLemburController extends Controller
             $data_lemburs->whereYear('overtime_in', $tahun);
         }
 
+        if ($lembur_status == 'pending') {
+            $data_lemburs->whereNull('is_approved');
+        } elseif ($lembur_status == 'approved') {
+            $data_lemburs->where('is_approved', 1);
+        } elseif ($lembur_status == 'reject') {
+            $data_lemburs->where('is_approved', 0);
+        }
+
         $data_lemburs = $data_lemburs->orderBy('overtime_in', 'desc')->paginate(10)->withQueryString();
 
         $karyawans = Karyawan::where('is_active', 1)->get();
@@ -49,13 +58,14 @@ class DataLemburController extends Controller
         $tahuns    = $this->list_year();
 
         $data = [
-            'data_lemburs' => $data_lemburs,
-            'karyawans'    => $karyawans,
-            'karyawan_id'  => $karyawan_id,
-            'bulans'       => $bulans,
-            'bulan'        => $bulan,
-            'tahuns'       => $tahuns,
-            'tahun'        => $tahun,
+            'data_lemburs'  => $data_lemburs,
+            'karyawans'     => $karyawans,
+            'karyawan_id'   => $karyawan_id,
+            'bulans'        => $bulans,
+            'bulan'         => $bulan,
+            'tahuns'        => $tahuns,
+            'tahun'         => $tahun,
+            'lembur_status' => $lembur_status,
         ];
 
         return view('pages.data_lembur.index', $data);

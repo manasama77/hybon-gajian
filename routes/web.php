@@ -32,7 +32,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware([
+    'auth',
+    'role:admin',
+])->group(function () {
     Route::prefix('setup')->name('setup.')->group(function () {
         Route::get('/departements', [DepartementController::class, 'index'])->name('departements.index');
         Route::get('/departements/create', [DepartementController::class, 'create'])->name('departements.create');

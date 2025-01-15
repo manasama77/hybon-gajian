@@ -15,139 +15,116 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
-        $pengeluaran_gaji_full  = 0;
-        $gaji_kehadiran         = 0;
-        $potongan_absen         = 0;
         $lembur                 = 0;
-        $potongan_keterlambatan = 0;
-        $potongan_ijin          = 0;
-        $potongan_kasbon        = 0;
         $thp                    = 0;
+        $gaji_kehadiran         = 0;
+        $potongan_keterlambatan = 0;
+        $potongan_kasbon        = 0;
+        $potongan_ijin          = 0;
 
         $periode_cutoff = PeriodeCutoff::active()->first();
 
         if ($periode_cutoff) {
             $total_hari_kerja = $periode_cutoff->hari_kerja;
-            $kehadiran_start  = $periode_cutoff->kehadiran_start;
-            $kehadiran_end    = $periode_cutoff->kehadiran_end;
-
-            // pengeluaran gaji full
-            $karyawans = Karyawan::where('is_active', true);
+            // start hitung total lembur karyawan
+            $data_lemburs = DataLembur::approved()->where('periode_cutoff_id', $periode_cutoff->id);
             if (Auth::user()->hasRole('karyawan')) {
-                $karyawans->where('id', Auth::user()->karyawan->id);
+                $data_lemburs->where('karyawan_id', Auth::user()->karyawan->id);
             }
-            $karyawans = $karyawans->get();
-            foreach ($karyawans as $karyawan) {
-                $tipe_gaji = $karyawan->tipe_gaji;
-                if ($tipe_gaji == 'bulanan') {
-                    $pengeluaran_gaji_full += $karyawan->gaji_pokok;
-                } else {
-                    $pengeluaran_gaji_full += $karyawan->gaji_harian * $total_hari_kerja;
-                }
+            $data_lemburs = $data_lemburs->sum('menit_lembur');
+            $lembur       = round($data_lemburs * (config('app.lembur_rate') / 60), 2);
+            // end hitung total lembur karyawan
+
+            // start hitung kehadiran karyawan
+            $data_kehadirans = DataKehadiran::with('karyawan')->where('periode_cutoff_id', $periode_cutoff->id);
+            if (Auth::user()->hasRole('karyawan')) {
+                $data_kehadirans->where('karyawan_id', Auth::user()->karyawan->id);
             }
-
-            // pengeluaran gaji kehadiran & potongan keterlambatan & potongan ijin
-            foreach ($karyawans as $karyawan) {
-                $karyawan_id = $karyawan->id;
-                $tipe_gaji   = $karyawan->tipe_gaji;
-                $gaji_pokok  = $karyawan->gaji_pokok;
-                $gaji_harian = $karyawan->gaji_harian;
-
-                $data_kehadirans = DataKehadiran::where('periode_cutoff_id', $periode_cutoff->id)
-                    ->where('karyawan_id', $karyawan_id);
-
-                $count_hari_kerja    = $data_kehadirans->count();
-                $sum_menit_terlambat = $data_kehadirans->sum('menit_terlambat');
-
-                $potongan_keterlambatan = $sum_menit_terlambat * (config('app.potongan_terlambat') / 60);
-
-                if ($count_hari_kerja == $total_hari_kerja) {
-                    if ($tipe_gaji == 'bulanan') {
-                        $gaji_kehadiran += $gaji_pokok;
-                    } else {
-                        $gaji_kehadiran += round($gaji_harian * $count_hari_kerja, 2);
-                    }
-                } else {
-                    if ($tipe_gaji == 'bulanan') {
-                        $gaji_kehadiran += round(($gaji_pokok / $total_hari_kerja) * $count_hari_kerja, 2);
-                    } else {
-                        $gaji_kehadiran += round($gaji_harian * $count_hari_kerja, 2);
-                    }
-                }
-
-                // potongan ijin
-                $data_ijins = DataIjin::where('is_approved', true)
-                    ->where('karyawan_id', $karyawan_id)
-                    ->where('from_date', '>=', $kehadiran_start->toDateString())
-                    ->where('to_date', '<=', $kehadiran_end->toDateString());
+            $sum_keterlambatan = $data_kehadirans->sum('menit_terlambat');
+            $potongan_keterlambatan = round($sum_keterlambatan * (config('app.potongan_terlambat') / 60), 2);
+            $data_kehadirans = $data_kehadirans->get();
+            foreach ($data_kehadirans as $data_kehadiran) {
+                $tipe_gaji = $data_kehadiran->karyawan->tipe_gaji;
 
                 if ($tipe_gaji == 'bulanan') {
-                    $potongan_ijin += $data_ijins->count() * ($gaji_pokok / $total_hari_kerja);
+                    $gaji_harian     = $data_kehadiran->karyawan->gaji_pokok / $total_hari_kerja;
+                    $gaji_kehadiran += $gaji_harian;
                 } else {
-                    $potongan_ijin += $data_ijins->count() * $gaji_harian;
+                    $gaji_kehadiran += $data_kehadiran->karyawan->gaji_harian;
                 }
-
-                $data_kasbons = DataKasbon::where('karyawan_id', $karyawan_id)
-                    ->whereBetween('tanggal', [$kehadiran_start->toDateString(), $kehadiran_end->toDateString()]);
-
-                $potongan_kasbon += $data_kasbons->sum('jumlah');
             }
-            $gaji_kehadiran         = round($gaji_kehadiran, 2);
-            $potongan_absen         = round($pengeluaran_gaji_full - $gaji_kehadiran, 2);
-            $potongan_keterlambatan = round($potongan_keterlambatan, 2);
-            $potongan_ijin          = round($potongan_ijin, 2);
-            $potongan_kasbon        = round($potongan_kasbon, 2);
+            // end hitung kehadiran karyawan
 
-            // pengeluaran lembur
-            $lemburs = DataLembur::where('periode_cutoff_id', $periode_cutoff->id)->where('is_approved', true);
+            // start hitung kasbon
+            $data_kasbons = DataKasbon::whereBetween('tanggal', [
+                $periode_cutoff->kehadiran_start->format('Y-m-d'),
+                $periode_cutoff->kehadiran_end->format('Y-m-d')
+            ]);
             if (Auth::user()->hasRole('karyawan')) {
-                $lemburs->where('karyawan_id', Auth::user()->karyawan->id);
+                $data_kasbons->where('karyawan_id', Auth::user()->karyawan->id);
             }
-            $lembur = $lemburs->sum('menit_lembur') * (config('app.lembur_rate') / 60);
+            $potongan_kasbon = $data_kasbons->sum('jumlah');
+            // end hitung kasbon
+
+            // start hitung ijin
+            $data_ijins = DataIjin::with('karyawan')->where('is_approved', true)
+                ->where('from_date', '>=', $periode_cutoff->kehadiran_start->format('Y-m-d'))
+                ->where('to_date', '<=', $periode_cutoff->kehadiran_end->format('Y-m-d'))
+                ->where('is_approved', true)
+                ->where('tipe_ijin', 'ijin potong gaji');
+            if (Auth::user()->hasRole('karyawan')) {
+                $data_ijins->where('karyawan_id', Auth::user()->karyawan->id);
+            }
+            $data_ijins = $data_ijins->get();
+            foreach ($data_ijins as $data_ijin) {
+                $tipe_gaji = $data_ijin->karyawan->tipe_gaji;
+                if ($tipe_gaji == 'bulanan') {
+                    $gaji_harian    = $data_kehadiran->karyawan->gaji_pokok / $total_hari_kerja;
+                    $potongan_ijin += $gaji_harian;
+                }
+            }
+            // end hitung ijin
+
+            $thp = $lembur + $gaji_kehadiran - $potongan_keterlambatan - $potongan_kasbon - $potongan_ijin;
         }
-
-        $thp = round($gaji_kehadiran + $lembur - $potongan_absen - $potongan_keterlambatan - $potongan_ijin - $potongan_kasbon, 2);
-
-        $thp_show = number_format($thp, 2, ',', '.');
-        $thp_hide = preg_replace('/\d/', '*', $thp_show);
 
         $lembur_show = number_format($lembur, 2, ',', '.');
         $lembur_hide = preg_replace('/\d/', '*', $lembur_show);
 
-        $potongan_absen_show = number_format($potongan_absen, 2, ',', '.');
-        $potongan_absen_hide = preg_replace('/\d/', '*', $potongan_absen_show);
+        $gaji_kehadiran_show = number_format($gaji_kehadiran, 2, ',', '.');
+        $gaji_kehadiran_hide = preg_replace('/\d/', '*', $gaji_kehadiran_show);
 
         $potongan_keterlambatan_show = number_format($potongan_keterlambatan, 2, ',', '.');
         $potongan_keterlambatan_hide = preg_replace('/\d/', '*', $potongan_keterlambatan_show);
 
-        $potongan_ijin_show = number_format($potongan_ijin, 2, ',', '.');
-        $potongan_ijin_hide = preg_replace('/\d/', '*', $potongan_ijin_show);
-
         $potongan_kasbon_show = number_format($potongan_kasbon, 2, ',', '.');
         $potongan_kasbon_hide = preg_replace('/\d/', '*', $potongan_kasbon_show);
 
-        $data = [
-            'thp_show' => $thp_show,
-            'thp_hide' => $thp_hide,
+        $potongan_ijin_show = number_format($potongan_ijin, 2, ',', '.');
+        $potongan_ijin_hide = preg_replace('/\d/', '*', $potongan_ijin_show);
 
+        $thp_show = number_format($thp, 2, ',', '.');
+        $thp_hide = preg_replace('/\d/', '*', $thp_show);
+
+        $data = [
             'lembur_show' => $lembur_show,
             'lembur_hide' => $lembur_hide,
 
-            'potongan_absen_show' => $potongan_absen_show,
-            'potongan_absen_hide' => $potongan_absen_hide,
+            'gaji_kehadiran_show' => $gaji_kehadiran_show,
+            'gaji_kehadiran_hide' => $gaji_kehadiran_hide,
 
             'potongan_keterlambatan_show' => $potongan_keterlambatan_show,
             'potongan_keterlambatan_hide' => $potongan_keterlambatan_hide,
 
-            'potongan_ijin_show' => $potongan_ijin_show,
-            'potongan_ijin_hide' => $potongan_ijin_hide,
-
             'potongan_kasbon_show' => $potongan_kasbon_show,
             'potongan_kasbon_hide' => $potongan_kasbon_hide,
 
-        ];
+            'potongan_ijin_show' => $potongan_ijin_show,
+            'potongan_ijin_hide' => $potongan_ijin_hide,
 
+            'thp_show' => $thp_show,
+            'thp_hide' => $thp_hide,
+        ];
 
         return view('dashboard', $data);
     }
