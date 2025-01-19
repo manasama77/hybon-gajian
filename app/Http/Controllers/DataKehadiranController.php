@@ -115,7 +115,7 @@ class DataKehadiranController extends Controller
                 'karyawan_id'       => ['required', 'exists:karyawans,id'],
                 'periode_cutoff_id' => ['required', 'exists:periode_cutoffs,id'],
                 'tipe_kehadiran'    => ['required', 'in:in,out'],
-                'foto'              => ['required', 'image'],
+                'foto'              => ['nullable', 'image'],
             ]);
 
             $check_hari_libur = HariLibur::where('tanggal', Carbon::now()->toDateString())->first();
@@ -138,8 +138,10 @@ class DataKehadiranController extends Controller
                 }
             }
 
-            $underscore_name = str_replace(' ', '_', strtolower($request->user()->name));
-            $path            = $request->file('foto')->store('foto_kehadiran_' . $underscore_name, 'public');
+            // $underscore_name = str_replace(' ', '_', strtolower($request->user()->name));
+            // $path            = $request->file('foto')->store('foto_kehadiran_' . $underscore_name, 'public');
+            // $underscore_name = '#';
+            $path            = '#';
 
             // $image_manager = new ImageManager(new Driver());
             // $image_resize = $image_manager->read(public_path('storage/' . $path));

@@ -142,7 +142,7 @@
                                                     {{ $data_kehadiran->clock_in }}
                                                 </div>
                                                 <div>
-                                                    @if ($data_kehadiran->foto_in)
+                                                    @if ($data_kehadiran->foto_in && $data_kehadiran->foto_in != '#')
                                                         <a href="{{ route('data-kehadiran.show', ['path' => $data_kehadiran->foto_in]) }}"
                                                             class="focus:outline-none hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-900 px-2 py-2 text-sm font-medium text-white bg-yellow-500 rounded-lg"
                                                             target="_blank">
@@ -158,7 +158,7 @@
                                                     {{ $data_kehadiran->clock_out }}
                                                 </div>
                                                 <div>
-                                                    @if ($data_kehadiran->foto_out)
+                                                    @if ($data_kehadiran->foto_out && $data_kehadiran->foto_out != '#')
                                                         <a href="{{ route('data-kehadiran.show', ['path' => $data_kehadiran->foto_out]) }}"
                                                             class="focus:outline-none hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-900 px-2 py-2 text-sm font-medium text-white bg-yellow-500 rounded-lg"
                                                             target="_blank">

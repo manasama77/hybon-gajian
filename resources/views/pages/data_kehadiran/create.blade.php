@@ -91,7 +91,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
+                    {{-- <div class="mb-4">
                         <label for="foto"
                             class="dark:text-white block mb-2 text-sm font-medium text-gray-900">Foto</label>
 
@@ -106,7 +106,7 @@
                         @error('foto')
                             <p class="text-xs italic text-red-500">{{ $message }}</p>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <div class="flex items-center justify-end">
                         <button type="submit"
