@@ -87,8 +87,9 @@
                                         d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                 </svg>
                             </div>
-                            <input datepicker datepicker-format="dd-mm-yyyy" id="overtime_in_date"
-                                name="overtime_in_date" value="{{ old('overtime_in_date') }}" type="text"
+                            <input datepicker datepicker-format="dd-mm-yyyy" datepicker-min-date="{{ $min_date }}"
+                                datepicker-max-date="{{ $max_date }}" id="overtime_in_date" name="overtime_in_date"
+                                value="{{ old('overtime_in_date') }}" type="text"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Select date" required autocomplete="off" inputmode="none" />
                         </div>
@@ -114,7 +115,7 @@
                             <input type="time" id="overtime_in_time" name="overtime_in_time"
                                 value="{{ old('overtime_in_time') }}"
                                 class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                required />
+                                min="18:00" max="23:59" required />
                         </div>
 
                         @error('overtime_in_time')
@@ -134,7 +135,8 @@
                                         d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                 </svg>
                             </div>
-                            <input datepicker datepicker-format="dd-mm-yyyy" id="overtime_out_date"
+                            <input datepicker datepicker-format="dd-mm-yyyy" datepicker-min-date="{{ $min_date }}"
+                                datepicker-max-date="{{ $max_date }}" id="overtime_out_date"
                                 name="overtime_out_date" value="{{ old('overtime_out_date') }}" type="text"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Select date" required autocomplete="off" inputmode="none" />
@@ -161,7 +163,7 @@
                             <input type="time" id="overtime_out_time" name="overtime_out_time"
                                 value="{{ old('overtime_out_time') }}"
                                 class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                required />
+                                max="23:59" required />
                         </div>
                         @error('overtime_out_time')
                             <p class="text-xs italic text-red-500">{{ $message }}</p>

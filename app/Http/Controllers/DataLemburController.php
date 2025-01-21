@@ -85,14 +85,17 @@ class DataLemburController extends Controller
 
         $karyawans = $karyawans->get();
 
-        $min_date = $periode_cutoffs->first()->lembur_start->format('Y-m-d');
-        $max_date = $periode_cutoffs->first()->lembur_end->format('Y-m-d');
+        $min_date = $periode_cutoffs->first()->lembur_start->format('d-m-Y');
+        $max_date = $periode_cutoffs->first()->lembur_end->format('d-m-Y');
+
+        $min_time = '18:00:00';
 
         $data = [
             'periode_cutoffs' => $periode_cutoffs,
             'karyawans'       => $karyawans,
             'min_date'        => $min_date,
             'max_date'        => $max_date,
+            'min_time'        => $min_time,
         ];
 
         return view('pages.data_lembur.create', $data);

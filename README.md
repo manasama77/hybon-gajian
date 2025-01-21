@@ -73,3 +73,6 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
 -   **Version 1.1.4**
     -   Perubahan Dashboard dibuat 2 tipe, dashboard untuk admin & karyawan
     -   Ijin -> "Sakit dengan surat dokter" dirubah tidak memotong jatah cuti
+-   **Version 1.1.5**
+    -   Perbaikan proses approve Ijin -> "Sakit dengan surat dokter" dirubah tidak memotong jatah cuti
+    -   Lembur -> Create, diberikan min dan max date time

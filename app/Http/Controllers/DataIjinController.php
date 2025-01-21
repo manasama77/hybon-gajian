@@ -216,11 +216,11 @@ class DataIjinController extends Controller
             if ($request->tipe == "approve") {
                 $data_karyawan = Karyawan::findOrFail($data_ijin->karyawan_id);
 
-                if (in_array($tipe_ijin, ['cuti', 'sakit dengan surat dokter']) && $total_hari > $data_karyawan->sisa_cuti) {
+                if (in_array($tipe_ijin, ['cuti']) && $total_hari > $data_karyawan->sisa_cuti) {
                     throw new Exception('Sisa cuti tidak mencukupi');
                 }
 
-                if (in_array($tipe_ijin, ['cuti', 'sakit dengan surat dokter'])) {
+                if (in_array($tipe_ijin, ['cuti'])) {
                     $data_karyawan->sisa_cuti -= $total_hari;
                     $data_karyawan->save();
                 }
