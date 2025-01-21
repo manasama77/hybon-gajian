@@ -14,7 +14,7 @@ class Karyawan extends Model
         'departement_id',
         'name',
         'join_date',
-        'tipe_gaji',
+        'tipe_gaji', // bulanan / harian
         'gaji_pokok',
         'gaji_harian',
         'whatsapp',

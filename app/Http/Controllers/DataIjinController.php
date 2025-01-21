@@ -127,7 +127,7 @@ class DataIjinController extends Controller
                 ->where('id', $request->karyawan_id)
                 ->first();
 
-            if (in_array($request->tipe_ijin, ['cuti', 'sakit dengan surat dokter']) && $total_hari > $data_karyawan->sisa_cuti) {
+            if (in_array($request->tipe_ijin, ['cuti']) && $total_hari > $data_karyawan->sisa_cuti) {
                 throw new Exception('Sisa cuti tidak mencukupi');
             }
 

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataIjin;
-use App\Models\DataKasbon;
 use App\Models\Karyawan;
+use Carbon\CarbonPeriod;
+use App\Models\HariLibur;
+use App\Models\DataKasbon;
 use App\Models\DataLembur;
 use Illuminate\Http\Request;
 use App\Models\DataKehadiran;
 use App\Models\PeriodeCutoff;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -21,13 +24,20 @@ class DashboardController extends Controller
         $potongan_keterlambatan = 0;
         $potongan_kasbon        = 0;
         $potongan_ijin          = 0;
+        $total_gaji             = 0;
+        $potongan_absen         = 0;
+        $proyeksi_pengeluaran   = 0;
 
         $periode_cutoff = PeriodeCutoff::active()->first();
 
         if ($periode_cutoff) {
-            $total_hari_kerja = $periode_cutoff->hari_kerja;
+            $periode_cutoff_id = $periode_cutoff->id;
+            $total_hari_kerja  = $periode_cutoff->hari_kerja;
+            $kehadiran_start   = $periode_cutoff->kehadiran_start;
+            $kehadiran_end     = $periode_cutoff->kehadiran_end;
+
             // start hitung total lembur karyawan
-            $data_lemburs = DataLembur::approved()->where('periode_cutoff_id', $periode_cutoff->id);
+            $data_lemburs = DataLembur::approved()->where('periode_cutoff_id', $periode_cutoff_id);
             if (Auth::user()->hasRole('karyawan')) {
                 $data_lemburs->where('karyawan_id', Auth::user()->karyawan->id);
             }
@@ -36,20 +46,20 @@ class DashboardController extends Controller
             // end hitung total lembur karyawan
 
             // start hitung kehadiran karyawan
-            $data_kehadirans = DataKehadiran::with('karyawan')->where('periode_cutoff_id', $periode_cutoff->id);
+            $data_kehadirans = DataKehadiran::with('karyawan')->where('periode_cutoff_id', $periode_cutoff_id);
             if (Auth::user()->hasRole('karyawan')) {
                 $data_kehadirans->where('karyawan_id', Auth::user()->karyawan->id);
             }
-            $sum_keterlambatan = $data_kehadirans->sum('menit_terlambat');
+            $sum_keterlambatan      = $data_kehadirans->sum('menit_terlambat');
             $potongan_keterlambatan = round($sum_keterlambatan * (config('app.potongan_terlambat') / 60), 2);
-            $data_kehadirans = $data_kehadirans->get();
+            $data_kehadirans        = $data_kehadirans->get();
             foreach ($data_kehadirans as $data_kehadiran) {
                 $tipe_gaji = $data_kehadiran->karyawan->tipe_gaji;
 
                 if ($tipe_gaji == 'bulanan') {
                     $gaji_harian     = $data_kehadiran->karyawan->gaji_pokok / $total_hari_kerja;
                     $gaji_kehadiran += $gaji_harian;
-                } else {
+                } elseif ($tipe_gaji == 'harian') {
                     $gaji_kehadiran += $data_kehadiran->karyawan->gaji_harian;
                 }
             }
@@ -86,6 +96,85 @@ class DashboardController extends Controller
             // end hitung ijin
 
             $thp = $lembur + $gaji_kehadiran - $potongan_keterlambatan - $potongan_kasbon - $potongan_ijin;
+
+            // hitung total gaji start
+            if (Auth::user()->hasRole('karyawan')) {
+                $karyawan = Karyawan::where('is_active', true)->find(Auth::user()->karyawan->id);
+                $tipe_gaji = $karyawan->tipe_gaji;
+                if ($tipe_gaji == 'bulanan') {
+                    $total_gaji = $karyawan->gaji_pokok;
+                } else {
+                    $total_gaji = $total_hari_kerja * $karyawan->gaji_harian;
+                }
+            } else {
+                $bulanan_karyawans = Karyawan::where('is_active', true)->get();
+                foreach ($bulanan_karyawans as $karyawan) {
+                    $tipe_gaji = $karyawan->tipe_gaji;
+                    if ($tipe_gaji == 'bulanan') {
+                        $total_gaji += $karyawan->gaji_pokok;
+                    } else {
+                        $total_gaji += $total_hari_kerja * $karyawan->gaji_harian;
+                    }
+                }
+            }
+            // hitung total gaji end
+
+            // hitung potongan absen start
+            $hari_liburs = HariLibur::select('tanggal')
+                ->whereBetween('tanggal', [$kehadiran_start->toDateString(), $kehadiran_end->toDateString()])
+                ->get();
+            $arr_hari_libur = [];
+            foreach ($hari_liburs as $hari_libur) {
+                $tanggal = $hari_libur->tanggal->toDateString();
+                array_push($arr_hari_libur, $tanggal);
+            }
+
+            $periods = CarbonPeriod::create($kehadiran_start, Carbon::now());
+            foreach ($periods as $period) {
+                if ($period->isSunday()) {
+                    continue;
+                }
+
+                if (in_array($period->toDateString(), $arr_hari_libur)) {
+                    continue;
+                }
+
+                $karyawans = Karyawan::where('is_active', true);
+
+                if (Auth::user()->hasRole('karyawan')) {
+                    $karyawans->where('user_id', Auth::user()->karyawan->id);
+                }
+
+                $karyawans = $karyawans->get();
+
+                foreach ($karyawans as $karyawan) {
+                    $karyawan_id         = $karyawan->id;
+                    $tipe_gaji           = $karyawan->tipe_gaji;
+                    $gaji_pokok          = $karyawan->gaji_pokok;
+                    $gaji_harian         = $karyawan->gaji_harian;
+                    $gaji_harian_bulanan = $gaji_pokok / $total_hari_kerja;
+
+                    $check = DataKehadiran::where('karyawan_id', $karyawan_id)
+                        ->where('periode_cutoff_id', $periode_cutoff_id)
+                        ->where('tanggal', $period->toDateString())
+                        ->first();
+
+                    if ($check) {
+                        continue;
+                    }
+
+                    if ($tipe_gaji == 'bulanan') {
+                        $potongan_absen += $gaji_harian_bulanan;
+                    } else {
+                        $potongan_absen += $gaji_harian;
+                    }
+                }
+            }
+            // hitung potongan absen end
+
+            // proyeksi start
+            $proyeksi_pengeluaran = $total_gaji + $lembur - $potongan_absen - $potongan_keterlambatan - $potongan_ijin - $potongan_kasbon;
+            // proyeksi end
         }
 
         $lembur_show = number_format($lembur, 2, ',', '.');
@@ -106,6 +195,15 @@ class DashboardController extends Controller
         $thp_show = number_format($thp, 2, ',', '.');
         $thp_hide = preg_replace('/\d/', '*', $thp_show);
 
+        $total_gaji_show = number_format($total_gaji, 2, ',', '.');
+        $total_gaji_hide = preg_replace('/\d/', '*', $total_gaji_show);
+
+        $potongan_absen_show = number_format($potongan_absen, 2, ',', '.');
+        $potongan_absen_hide = preg_replace('/\d/', '*', $potongan_absen_show);
+
+        $proyeksi_pengeluaran_show = number_format($proyeksi_pengeluaran, 2, ',', '.');
+        $proyeksi_pengeluaran_hide = preg_replace('/\d/', '*', $proyeksi_pengeluaran_show);
+
         $data = [
             'lembur_show' => $lembur_show,
             'lembur_hide' => $lembur_hide,
@@ -124,6 +222,15 @@ class DashboardController extends Controller
 
             'thp_show' => $thp_show,
             'thp_hide' => $thp_hide,
+
+            'total_gaji_show' => $total_gaji_show,
+            'total_gaji_hide' => $total_gaji_hide,
+
+            'potongan_absen_show' => $potongan_absen_show,
+            'potongan_absen_hide' => $potongan_absen_hide,
+
+            'proyeksi_pengeluaran_show' => $proyeksi_pengeluaran_show,
+            'proyeksi_pengeluaran_hide' => $proyeksi_pengeluaran_hide,
         ];
 
         return view('dashboard', $data);

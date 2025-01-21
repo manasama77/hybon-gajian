@@ -70,3 +70,6 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
     -   Data Lembur penambahan filter status
     -   Karyawan dengan tipe gaji harian tidak dapat akses Request Ijin
     -   Perbaikan bug karyawan bisa akses halaman setup
+-   **Version 1.1.4**
+    -   Perubahan Dashboard dibuat 2 tipe, dashboard untuk admin & karyawan
+    -   Ijin -> "Sakit dengan surat dokter" dirubah tidak memotong jatah cuti
