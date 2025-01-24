@@ -156,7 +156,8 @@ class DataLemburController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('data-lembur.index')->with('success', 'Data lembur berhasil disimpan.');
+            // return redirect()->route('data-lembur.index')->with('success', 'Data lembur berhasil disimpan.');
+            return redirect()->back()->with('success', 'Data lembur berhasil disimpan.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors($e->getMessage())->withInput();

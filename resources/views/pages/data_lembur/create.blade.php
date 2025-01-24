@@ -19,6 +19,14 @@
             <div
                 class="dark:bg-gray-800 dark:border-gray-700 block max-w-sm p-6 mx-auto bg-white border border-gray-200 rounded-lg shadow">
 
+                @if (session('success'))
+                    <div class="relative px-4 py-3 mt-4 text-green-700 bg-green-100 border border-green-400 rounded"
+                        role="alert">
+                        <strong class="font-bold">Success!</strong>
+                        <span class="sm:inline block">{{ session('success') }}</span>
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="relative px-4 py-3 mt-4 text-red-700 bg-red-100 border border-red-400 rounded"
                         role="alert">
