@@ -18,6 +18,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $menit_lembur           = 0;
         $lembur                 = 0;
         $thp                    = 0;
         $gaji_kehadiran         = 0;
@@ -35,14 +36,29 @@ class DashboardController extends Controller
             $total_hari_kerja  = $periode_cutoff->hari_kerja;
             $kehadiran_start   = $periode_cutoff->kehadiran_start;
             $kehadiran_end     = $periode_cutoff->kehadiran_end;
+            $lembur_start      = $periode_cutoff->lembur_start;
+            $lembur_end        = $periode_cutoff->lembur_end;
 
             // start hitung total lembur karyawan
-            $data_lemburs = DataLembur::approved()->where('periode_cutoff_id', $periode_cutoff_id);
+            $data_lemburs = DataLembur::approved()
+                ->whereDate('overtime_in', '>=', $lembur_start)
+                ->whereDate('overtime_in', '<=', $lembur_end);
             if (Auth::user()->hasRole('karyawan')) {
                 $data_lemburs->where('karyawan_id', Auth::user()->karyawan->id);
             }
-            $data_lemburs = $data_lemburs->sum('menit_lembur');
-            $lembur       = round($data_lemburs * (config('app.lembur_rate') / 60), 2);
+            $data_lemburs = $data_lemburs->get();
+            foreach ($data_lemburs as $data_lembur) {
+                $overtime_in  = Carbon::parse($data_lembur->overtime_in);
+                $overtime_out = Carbon::parse($data_lembur->overtime_out);
+
+                if ($overtime_in->gte($lembur_start) && $overtime_out->gte($lembur_end)) {
+                    $eod           = Carbon::parse($overtime_in->toDateString() . ' 23:59:59');
+                    $menit_lembur += ceil($overtime_in->diffInMinutes(date: $eod));
+                } else {
+                    $menit_lembur += ceil($overtime_in->diffInMinutes(date: $overtime_out));
+                }
+            }
+            $lembur = round($menit_lembur * (config('app.lembur_rate') / 60), 2);
             // end hitung total lembur karyawan
 
             // start hitung kehadiran karyawan
@@ -89,8 +105,8 @@ class DashboardController extends Controller
             foreach ($data_ijins as $data_ijin) {
                 $tipe_gaji = $data_ijin->karyawan->tipe_gaji;
                 if ($tipe_gaji == 'bulanan') {
-                    $gaji_harian    = $data_kehadiran->karyawan->gaji_pokok / $total_hari_kerja;
-                    $potongan_ijin += $gaji_harian;
+                    $gaji_harian    = $data_ijin->karyawan->gaji_pokok / $total_hari_kerja;
+                    $potongan_ijin += $gaji_harian * $data_ijin->total_hari;
                 }
             }
             // end hitung ijin

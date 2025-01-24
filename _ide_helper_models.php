@@ -116,7 +116,6 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $karyawan_id
- * @property int $periode_cutoff_id
  * @property \Illuminate\Support\Carbon $overtime_in
  * @property \Illuminate\Support\Carbon|null $overtime_out
  * @property int $jam_lembur
@@ -127,7 +126,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Karyawan $karyawan
- * @property-read \App\Models\PeriodeCutoff $periode_cutoff
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur approved()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur newQuery()
@@ -143,7 +141,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur whereMenitLembur($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur whereOvertimeIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur whereOvertimeOut($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur wherePeriodeCutoffId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataLembur whereUpdatedAt($value)
  */
 	class DataLembur extends \Eloquent {}
@@ -277,8 +274,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DataKehadiran> $data_kehadiran
  * @property-read int|null $data_kehadiran_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DataLembur> $data_lembur
- * @property-read int|null $data_lembur_count
  * @property-read mixed $status
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RequestKehadiran> $request_kehadiran
  * @property-read int|null $request_kehadiran_count

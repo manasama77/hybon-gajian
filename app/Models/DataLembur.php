@@ -8,7 +8,6 @@ class DataLembur extends Model
 {
     protected $fillable = [
         'karyawan_id',
-        'periode_cutoff_id',
         'overtime_in',
         'overtime_out',
         'jam_lembur',
@@ -27,11 +26,6 @@ class DataLembur extends Model
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);
-    }
-
-    public function periode_cutoff()
-    {
-        return $this->belongsTo(PeriodeCutoff::class);
     }
 
     public function approved_by()

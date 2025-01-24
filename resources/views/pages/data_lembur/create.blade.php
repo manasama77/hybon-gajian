@@ -14,7 +14,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 mb-32">
         <div class="max-w-7xl sm:px-6 lg:px-8 mx-auto">
             <div
                 class="dark:bg-gray-800 dark:border-gray-700 block max-w-sm p-6 mx-auto bg-white border border-gray-200 rounded-lg shadow">
@@ -35,26 +35,6 @@
                     @csrf
 
                     @if (auth()->user()->hasRole('admin'))
-                        <div class="mb-4">
-                            <label for="periode_cutoff_id"
-                                class="dark:text-white block mb-2 text-sm font-medium text-gray-900">
-                                Periode Cutoff
-                            </label>
-                            <select id="periode_cutoff_id" name="periode_cutoff_id"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                required>
-                                @foreach ($periode_cutoffs as $periode_cutoff)
-                                    <option value="{{ $periode_cutoff->id }}">
-                                        {{ $periode_cutoff->lembur_start->format('d F Y') }} s/d
-                                        {{ $periode_cutoff->lembur_end->format('d F Y') }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('periode_cutoff_id')
-                                <p class="text-xs italic text-red-500">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <div class="mb-4">
                             <label for="karyawan_id"
                                 class="dark:text-white block mb-2 text-sm font-medium text-gray-900">
@@ -87,9 +67,8 @@
                                         d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                 </svg>
                             </div>
-                            <input datepicker datepicker-format="dd-mm-yyyy" datepicker-min-date="{{ $min_date }}"
-                                datepicker-max-date="{{ $max_date }}" id="overtime_in_date" name="overtime_in_date"
-                                value="{{ old('overtime_in_date') }}" type="text"
+                            <input datepicker datepicker-format="dd-mm-yyyy" id="overtime_in_date"
+                                name="overtime_in_date" value="{{ old('overtime_in_date') }}" type="text"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Select date" required autocomplete="off" inputmode="none" />
                         </div>
@@ -135,8 +114,7 @@
                                         d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                 </svg>
                             </div>
-                            <input datepicker datepicker-format="dd-mm-yyyy" datepicker-min-date="{{ $min_date }}"
-                                datepicker-max-date="{{ $max_date }}" id="overtime_out_date"
+                            <input datepicker datepicker-format="dd-mm-yyyy" id="overtime_out_date"
                                 name="overtime_out_date" value="{{ old('overtime_out_date') }}" type="text"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Select date" required autocomplete="off" inputmode="none" />

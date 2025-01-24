@@ -141,7 +141,9 @@ class PeriodeCutoffController extends Controller
             $lembur_end      = $periode_cutoffs->lembur_end;
             $hari_kerja      = $periode_cutoffs->hari_kerja;
 
-            $karyawans = Karyawan::with('departement')->where('is_active', true)->get();
+            $karyawans = Karyawan::with('departement')
+                ->where('is_active', true)
+                ->get();
 
             foreach ($karyawans as $karyawan) {
                 $karyawan_id = $karyawan->id;
@@ -191,20 +193,31 @@ class PeriodeCutoffController extends Controller
                 $potongan_terlambat_per_menit = (float) config('app.potongan_terlambat') / 60;
                 $potongan_terlambat           = round($potongan_terlambat_per_menit * $menit_terlambat, 2);
 
-                $data_lembur = DataLembur::where('karyawan_id', $karyawan_id)
-                    ->where('periode_cutoff_id', $periode_cutoff_id)
-                    ->where('overtime_in', '>=', $lembur_start)
-                    ->where('overtime_out', '<=', $lembur_end)
-                    ->where('is_approved', true);
+                $data_lemburs = DataLembur::where('karyawan_id', $karyawan_id)
+                    ->whereDate('overtime_in', '>=', $lembur_start)
+                    ->whereDate('overtime_in', '<=', $lembur_end)
+                    ->where('is_approved', true)
+                    ->get();
 
-                $total_jam_lembur      = $data_lembur->sum('jam_lembur');
-                $total_menit_lembur    = $data_lembur->sum('menit_lembur');
-                $lembur_rate_per_menit = (float) config('app.lembur_rate') / 60;
-                $gaji_lembur           = round($lembur_rate_per_menit * $total_menit_lembur, 2);
+                $total_jam_lembur   = 0;
+                $total_menit_lembur = 0;
+                foreach ($data_lemburs as $data_lembur) {
+                    $overtime_in  = Carbon::parse($data_lembur->overtime_in);
+                    $overtime_out = Carbon::parse($data_lembur->overtime_out);
+                    if ($overtime_in->gte($lembur_start) && $overtime_out->gte($lembur_end)) {
+                        $eod = Carbon::parse($overtime_in->toDateString() . ' 23:59:59');
+                        $total_jam_lembur   += ceil($overtime_in->diffInMinutes(date: $eod) / 60);
+                        $total_menit_lembur += ceil($overtime_in->diffInMinutes(date: $eod));
+                    } else {
+                        $total_jam_lembur   += ceil($overtime_in->diffInMinutes(date: $overtime_out) / 60);
+                        $total_menit_lembur += ceil($overtime_in->diffInMinutes(date: $overtime_out));
+                    }
+                }
+                $gaji_lembur = round($total_menit_lembur * (config('app.lembur_rate') / 60), 2);
 
                 $data_ijin = DataIjin::where('karyawan_id', $karyawan_id)
-                    ->where('from_date', '>=', $lembur_start)
-                    ->where('to_date', '<=', $lembur_end)
+                    ->where('from_date', '>=', $kehadiran_start)
+                    ->where('to_date', '<=', $kehadiran_end)
                     ->where('is_approved', true)
                     ->where('tipe_ijin', 'ijin potong gaji');
 

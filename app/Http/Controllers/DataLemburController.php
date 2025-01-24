@@ -111,26 +111,22 @@ class DataLemburController extends Controller
 
             if (Auth::user()->hasRole('karyawan')) {
                 $request->merge([
-                    'karyawan_id'       => Auth::user()->karyawan->id,
-                    'periode_cutoff_id' => PeriodeCutoff::active()->first()->id
+                    'karyawan_id' => Auth::user()->karyawan->id,
                 ]);
             }
 
             $request->validate([
                 'karyawan_id'       => ['required', 'exists:karyawans,id'],
-                'periode_cutoff_id' => ['required', 'exists:periode_cutoffs,id'],
                 'overtime_in_date'  => ['required', 'date'],
                 'overtime_in_time'  => ['required', 'date_format:H:i'],
                 'overtime_out_date' => ['required', 'date', 'after_or_equal:overtime_in_date'],
                 'overtime_out_time' => ['required', 'date_format:H:i'],
             ]);
 
-            $overtime_in_date  = Carbon::createFromFormat('d-m-Y', $request->overtime_in_date);
-            $overtime_out_date = Carbon::createFromFormat('d-m-Y', $request->overtime_out_date);
-            $overtime_in_x     = $overtime_in_date->toDateString() . ' ' . $request->overtime_in_time;
-            $overtime_out_x    = $overtime_out_date->toDateString() . ' ' . $request->overtime_out_time;
-            $overtime_in       = Carbon::parse($overtime_in_x);
-            $overtime_out      = Carbon::parse($overtime_out_x);
+            $overtime_in_date  = Carbon::createFromFormat('d-m-Y H:i', $request->overtime_in_date . ' ' . $request->overtime_in_time);
+            $overtime_out_date = Carbon::createFromFormat('d-m-Y H:i', $request->overtime_out_date . ' ' . $request->overtime_out_time);
+            $overtime_in       = Carbon::parse($overtime_in_date);
+            $overtime_out      = Carbon::parse($overtime_out_date);
 
             $check = DataLembur::where(column: 'karyawan_id', operator: $request->karyawan_id)
                 ->whereDate('overtime_in', $overtime_in->toDateString())
@@ -149,15 +145,14 @@ class DataLemburController extends Controller
             $menit_lembur = ceil($overtime_in->diffInMinutes(date: $overtime_out));
 
             DataLembur::createOrFirst([
-                'karyawan_id'       => $request->karyawan_id,
-                'periode_cutoff_id' => $request->periode_cutoff_id,
-                'overtime_in'       => $overtime_in->toDateTimeString(),
-                'overtime_out'      => $overtime_out->toDateTimeString(),
-                'jam_lembur'        => $jam_lembur,
-                'menit_lembur'      => $menit_lembur,
-                'is_approved'       => null,
-                'approved_by'       => null,
-                'approved_at'       => null,
+                'karyawan_id'  => $request->karyawan_id,
+                'overtime_in'  => $overtime_in->toDateTimeString(),
+                'overtime_out' => $overtime_out->toDateTimeString(),
+                'jam_lembur'   => $jam_lembur,
+                'menit_lembur' => $menit_lembur,
+                'is_approved'  => null,
+                'approved_by'  => null,
+                'approved_at'  => null,
             ]);
 
             DB::commit();

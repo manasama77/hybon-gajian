@@ -104,9 +104,6 @@
                                         <th scope="col" class="px-6 py-3">
                                             Karyawan
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Periode
-                                        </th>
                                     @endif
                                     <th scope="col" class="px-6 py-3">
                                         Ovetime In
@@ -143,10 +140,6 @@
                                         @if (auth()->user()->hasRole('admin'))
                                             <td class="px-6 py-4">
                                                 {{ $data_lembur->karyawan->name }}
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                {{ $data_lembur->periode_cutoff->lembur_start->format('d M Y') }} s/d
-                                                {{ $data_lembur->periode_cutoff->lembur_end->format('d M Y') }}
                                             </td>
                                         @endif
                                         <td class="px-6 py-4">

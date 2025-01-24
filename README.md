@@ -76,3 +76,8 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
 -   **Version 1.1.5**
     -   Perbaikan proses approve Ijin -> "Sakit dengan surat dokter" dirubah tidak memotong jatah cuti
     -   Lembur -> Create, diberikan min dan max date time
+-   **Version 1.1.6**
+    -   Menghilangkan relasi periode_cutoff_id dari table data_ijins
+    -   Perbaikan cara penghitungan potongan ijin pada dashboard yang sebelumnya tidak menghitung total hari ijin
+    -   Perubahan field gaji_lembur dari integer menjadi decimal pada table slip_gajis
+    -   Perubahan cara penghitungan gaji_lembur khusus untuk tanggal yang berbatasan dengan tanggal akhir lembur

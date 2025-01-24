@@ -44,11 +44,6 @@ class PeriodeCutoff extends Model
         return $this->hasMany(DataKehadiran::class);
     }
 
-    public function data_lembur()
-    {
-        return $this->hasMany(DataLembur::class);
-    }
-
     public function request_kehadiran()
     {
         return $this->hasMany(RequestKehadiran::class);
