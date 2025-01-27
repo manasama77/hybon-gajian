@@ -178,13 +178,13 @@ class DataIjinController extends Controller
      */
     public function destroy(DataIjin $dataIjin)
     {
-        if ($dataIjin->is_approved) {
-            return redirect()->route('data-ijin.index')->with('error', 'Data Ijin yang sudah diapprove tidak bisa dihapus');
-        }
+        // if ($dataIjin->is_approved) {
+        //     return redirect()->route('data-ijin.index')->withError('error', 'Data Ijin yang sudah diapprove tidak bisa dihapus');
+        // }
 
-        if ($dataIjin->is_approved === false) {
-            return redirect()->route('data-ijin.index')->with('error', 'Data Ijin yang sudah ditolak tidak bisa dihapus');
-        }
+        // if ($dataIjin->is_approved === false) {
+        //     return redirect()->route('data-ijin.index')->with('error', 'Data Ijin yang sudah ditolak tidak bisa dihapus');
+        // }
 
         $dataIjin->delete();
 
