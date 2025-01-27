@@ -130,20 +130,18 @@
                                                     @endif
                                                 @endif
 
-                                                @if ($data_ijin->is_approved === null)
-                                                    <form id="delete-form-{{ $data_ijin->id }}"
-                                                        action="{{ route('data-ijin.destroy', $data_ijin) }}"
-                                                        method="POST" class="inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                    </form>
-                                                    <button type="button"
-                                                        onclick="askDelete('delete-form-{{ $data_ijin->id }}')"
-                                                        class="focus:outline-none hover:bg-red-800 focus:ring-4 focus:ring-red-300 me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 px-3 py-2 mb-2 text-sm font-medium text-white bg-red-700 rounded-lg">
-                                                        <i class="fa-solid fa-trash me-2"></i>
-                                                        Delete
-                                                    </button>
-                                                @endif
+                                                <form id="delete-form-{{ $data_ijin->id }}"
+                                                    action="{{ route('data-ijin.destroy', $data_ijin) }}"
+                                                    method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                                <button type="button"
+                                                    onclick="askDelete('delete-form-{{ $data_ijin->id }}')"
+                                                    class="focus:outline-none hover:bg-red-800 focus:ring-4 focus:ring-red-300 me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 px-3 py-2 mb-2 text-sm font-medium text-white bg-red-700 rounded-lg">
+                                                    <i class="fa-solid fa-trash me-2"></i>
+                                                    Delete
+                                                </button>
                                             </td>
                                         @endif
                                     </tr>
