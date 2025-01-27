@@ -224,7 +224,7 @@ class PeriodeCutoffController extends Controller
                 $total_hari_ijin = (int) $data_ijin->sum('total_hari');
                 $potongan_ijin   = round($gaji_harian * $total_hari_ijin, 2);
 
-                $total_hari_tidak_kerja = $hari_kerja - $total_hari_kerja - $total_cuti - $total_sakit - $total_hari_ijin;
+                $total_hari_tidak_kerja = $hari_kerja - $total_hari_kerja - $total_hari_ijin - $total_cuti - $total_sakit;
                 $potongan_tidak_kerja   = round($gaji_harian * $total_hari_tidak_kerja, 2);
 
                 $prorate = true;
@@ -234,7 +234,7 @@ class PeriodeCutoffController extends Controller
                 }
 
                 $data_kasbon = DataKasbon::where('karyawan_id', $karyawan_id)
-                    ->whereBetween('tanggal', [$kehadiran_start->toDateString('Y-m-d'), $kehadiran_end->toDateString('Y-m-d')])
+                    ->whereBetween('tanggal', [$kehadiran_start->toDateString(), $kehadiran_end->toDateString()])
                     ->sum('jumlah');
 
                 $potongan_kasbon = (float) $data_kasbon;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\DataLembur;
 use Illuminate\Http\Request;
 use App\Models\DataKehadiran;
@@ -64,6 +65,12 @@ class TestController extends Controller
 
     public function test()
     {
-        return redirect()->route('data-lembur.index')->with('success', 'Data lembur berhasil disimpan.');
+        // $user = User::all();
+
+        // foreach ($user as $u) {
+        //     $u->update([
+        //         'password' => bcrypt('password'),
+        //     ]);
+        // }
     }
 }

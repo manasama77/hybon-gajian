@@ -81,3 +81,6 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
     -   Perbaikan cara penghitungan potongan ijin pada dashboard yang sebelumnya tidak menghitung total hari ijin
     -   Perubahan field gaji_lembur dari integer menjadi decimal pada table slip_gajis
     -   Perubahan cara penghitungan gaji_lembur khusus untuk tanggal yang berbatasan dengan tanggal akhir lembur
+-   **Version 1.1.7**
+    -   Perubahan dashboard khusus karyawan
+    -   Dashboard > Perbaikan pembulatan presisi menjadi 2

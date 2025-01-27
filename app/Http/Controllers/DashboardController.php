@@ -8,7 +8,6 @@ use Carbon\CarbonPeriod;
 use App\Models\HariLibur;
 use App\Models\DataKasbon;
 use App\Models\DataLembur;
-use Illuminate\Http\Request;
 use App\Models\DataKehadiran;
 use App\Models\PeriodeCutoff;
 use Illuminate\Support\Carbon;
@@ -111,6 +110,8 @@ class DashboardController extends Controller
             }
             // end hitung ijin
 
+            // dd($gaji_kehadiran);
+
             $thp = $lembur + $gaji_kehadiran - $potongan_keterlambatan - $potongan_kasbon - $potongan_ijin;
 
             // hitung total gaji start
@@ -145,7 +146,12 @@ class DashboardController extends Controller
                 array_push($arr_hari_libur, $tanggal);
             }
 
-            $periods = CarbonPeriod::create($kehadiran_start, Carbon::now());
+            if (Auth::user()->hasRole('karyawan')) {
+                $periods = CarbonPeriod::create($kehadiran_start, $kehadiran_end);
+            } else {
+                $periods = CarbonPeriod::create($kehadiran_start, Carbon::now());
+            }
+            // $periods = CarbonPeriod::create($kehadiran_start, Carbon::now());
             foreach ($periods as $period) {
                 if ($period->isSunday()) {
                     continue;
@@ -158,7 +164,7 @@ class DashboardController extends Controller
                 $karyawans = Karyawan::where('is_active', true);
 
                 if (Auth::user()->hasRole('karyawan')) {
-                    $karyawans->where('user_id', Auth::user()->karyawan->id);
+                    $karyawans->where('id', Auth::user()->karyawan->id);
                 }
 
                 $karyawans = $karyawans->get();
@@ -168,11 +174,21 @@ class DashboardController extends Controller
                     $tipe_gaji           = $karyawan->tipe_gaji;
                     $gaji_pokok          = $karyawan->gaji_pokok;
                     $gaji_harian         = $karyawan->gaji_harian;
-                    $gaji_harian_bulanan = $gaji_pokok / $total_hari_kerja;
+                    $gaji_harian_bulanan = round($gaji_pokok / $total_hari_kerja, 2);
 
                     $check = DataKehadiran::where('karyawan_id', $karyawan_id)
                         ->where('periode_cutoff_id', $periode_cutoff_id)
                         ->where('tanggal', $period->toDateString())
+                        ->first();
+
+                    if ($check) {
+                        continue;
+                    }
+
+                    $check = DataIjin::where('karyawan_id', $karyawan_id)
+                        ->where('from_date', '<=', $period->toDateString())
+                        ->where('to_date', '>=', $period->toDateString())
+                        ->where('is_approved', true)
                         ->first();
 
                     if ($check) {
