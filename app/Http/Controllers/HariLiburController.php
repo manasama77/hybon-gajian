@@ -13,7 +13,7 @@ class HariLiburController extends Controller
     public function index(Request $request)
     {
 
-        $hari_liburs = HariLibur::query();
+        $hari_liburs = HariLibur::orderBy('tanggal', 'asc');
 
         if ($request->has('search') && !is_null($request->search)) {
             $hari_liburs->where('keterangan', 'like', '%' . $request->search . '%');

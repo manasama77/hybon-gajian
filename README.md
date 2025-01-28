@@ -84,3 +84,6 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
 -   **Version 1.1.7**
     -   Perubahan dashboard khusus karyawan
     -   Dashboard > Perbaikan pembulatan presisi menjadi 2
+-   **Version 1.1.8**
+    -   Penambahan fitur presensi karyawan dari sisi admin
+    -   Ordering hari libur berdasarkan tanggal ascending

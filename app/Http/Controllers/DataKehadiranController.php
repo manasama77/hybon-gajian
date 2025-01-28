@@ -116,6 +116,7 @@ class DataKehadiranController extends Controller
                 'periode_cutoff_id' => ['required', 'exists:periode_cutoffs,id'],
                 'tipe_kehadiran'    => ['required', 'in:in,out'],
                 'foto'              => ['nullable', 'image'],
+                'jam'               => ['nullable'],
             ]);
 
             $check_hari_libur = HariLibur::where('tanggal', Carbon::now()->toDateString())->first();
@@ -148,7 +149,11 @@ class DataKehadiranController extends Controller
             // $image_resize->scale(height: 1000);
             // $image_resize->save(public_path('storage/' . $path));
 
-            $dt        = Carbon::now();
+            $dt = Carbon::now();
+            if ($request->jam) {
+                $dt = Carbon::parse($dt->toDateString() . ' ' . $request->jam);
+            }
+
             $clock_in  = $dt->toTimeString();
             $clock_out = $dt->toTimeString();
             $jam_masuk = Carbon::parse(config('app.jam_masuk'));
