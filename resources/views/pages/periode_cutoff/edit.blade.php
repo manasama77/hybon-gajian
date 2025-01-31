@@ -70,17 +70,6 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="hari_kerja"
-                            class="dark:text-white block mb-2 text-sm font-medium text-gray-900">Hari Kerja</label>
-                        <input type="number" name="hari_kerja" id="hari_kerja" placeholder="Hari Kerja"
-                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('name') border-red-500 @enderror"
-                            value="{{ $periode_cutoff->hari_kerja }}" min="0" required />
-                        @error('hari_kerja')
-                            <p class="text-xs italic text-red-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" value="1" id="is_active" name="is_active" class="peer sr-only"
                                 @checked($periode_cutoff->is_active) />

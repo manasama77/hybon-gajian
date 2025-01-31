@@ -62,7 +62,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
+                    {{-- <div class="mb-4">
                         <label for="hari_kerja"
                             class="dark:text-white block mb-2 text-sm font-medium text-gray-900">Hari Kerja</label>
                         <input type="number" name="hari_kerja" id="hari_kerja" placeholder="Hari Kerja"
@@ -71,7 +71,7 @@
                         @error('hari_kerja')
                             <p class="text-xs italic text-red-500">{{ $message }}</p>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <div class="mb-4">
                         <label class="inline-flex items-center cursor-pointer">

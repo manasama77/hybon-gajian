@@ -70,10 +70,38 @@ class PeriodeCutoffController extends Controller
             'kehadiran_end'   => ['required', 'date', 'after:kehadiran_start'],
             'lembur_start'    => ['required', 'date'],
             'lembur_end'      => ['required', 'date', 'after:lembur_start'],
-            'hari_kerja'      => ['required', 'numeric'],
             'is_active'       => ['boolean'],
         ]);
 
+        $hari_kerja = 0;
+
+        $kehadiran_start = Carbon::parse($request->kehadiran_start . ' 00:00:00');
+        $kehadiran_end   = Carbon::parse($request->kehadiran_end . ' 23:59:59');
+        $periode         = CarbonPeriod::create($kehadiran_start, '1 day', $kehadiran_end);
+
+        foreach ($periode as $date) {
+            $check_hari_libur = HariLibur::where('tanggal', $date->toDateString())->first();
+
+            if ($date->isSunday()) {
+                continue;
+            }
+
+            if ($check_hari_libur) {
+                continue;
+            }
+
+            $hari_kerja++;
+        }
+
+        if ($request->is_active) {
+            PeriodeCutoff::query()->update([
+                'is_active' => false,
+            ]);
+        }
+
+        $request->merge([
+            'hari_kerja' => $hari_kerja,
+        ]);
         PeriodeCutoff::create($request->all());
         return redirect()->route('setup.periode-cutoff.index')->with('success', 'Periode Cutoff berhasil ditambahkan');
     }
@@ -108,10 +136,38 @@ class PeriodeCutoffController extends Controller
             'kehadiran_end'   => ['required', 'date', 'after:kehadiran_start'],
             'lembur_start'    => ['required', 'date'],
             'lembur_end'      => ['required', 'date', 'after:lembur_start'],
-            'hari_kerja'      => ['required', 'numeric'],
             'is_active'       => ['boolean'],
         ]);
 
+        $hari_kerja = 0;
+
+        $kehadiran_start = Carbon::parse($request->kehadiran_start . ' 00:00:00');
+        $kehadiran_end   = Carbon::parse($request->kehadiran_end . ' 23:59:59');
+        $periode         = CarbonPeriod::create($kehadiran_start, '1 day', $kehadiran_end);
+
+        foreach ($periode as $date) {
+            $check_hari_libur = HariLibur::where('tanggal', $date->toDateString())->first();
+
+            if ($date->isSunday()) {
+                continue;
+            }
+
+            if ($check_hari_libur) {
+                continue;
+            }
+
+            $hari_kerja++;
+        }
+
+        if ($request->is_active) {
+            PeriodeCutoff::query()->update([
+                'is_active' => false,
+            ]);
+        }
+
+        $request->merge([
+            'hari_kerja' => $hari_kerja,
+        ]);
         $periodeCutoff->update($request->all());
         return redirect()->route('setup.periode-cutoff.index')->with('success', 'Periode Cutoff berhasil diubah');
     }

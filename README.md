@@ -92,3 +92,5 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
     -   Perbaikan bug perhitungan menit lembur pada slip gaji
     -   Perbaikan bug perhitungan menit lembur pada saat generate excel rekap gaji
     -   Slip gaji penambahan data kehadiran dan data lembur untuk validasi data gaji
+-   **Version 1.1.10**
+    -   Periode Cutoff ketika dibuat atau edit akan otomatis menghitung hari kerja berdasarkan tanggal awal dan akhir plus hari libur
