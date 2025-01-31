@@ -183,13 +183,13 @@ class DataKehadiranController extends Controller
                     'foto_out'          => null,
                 ]);
             } else {
-                $old_data = DataKehadiran::where('karyawan_id', $request->karyawan_id)
-                    ->where('tanggal', $dt->toDateString())
-                    ->first();
+                // $old_data = DataKehadiran::where('karyawan_id', $request->karyawan_id)
+                //     ->where('tanggal', $dt->toDateString())
+                //     ->first();
 
-                if ($old_data->foto_out != null) {
-                    unlink(public_path('storage/' . $old_data->foto_out));
-                }
+                // if ($old_data->foto_out != '#' || $old_data->foto_out != null) {
+                //     unlink(public_path('storage/' . $old_data->foto_out));
+                // }
 
                 DataKehadiran::where('karyawan_id', $request->karyawan_id)
                     ->where('tanggal', $dt->toDateString())
