@@ -59,6 +59,7 @@ Route::middleware([
         Route::put('/periode-cutoff/{periode_cutoff}', [PeriodeCutoffController::class, 'update'])->name('periode-cutoff.update');
         Route::delete('/periode-cutoff/{periode_cutoff}', [PeriodeCutoffController::class, 'destroy'])->name('periode-cutoff.destroy');
         Route::post('/periode-cutoff/generate-slip-gaji', [PeriodeCutoffController::class, 'generate_slip_gaji'])->name('periode-cutoff.generate-slip-gaji');
+        // Route::get('/periode-cutoff/generate-slip-gaji', [PeriodeCutoffController::class, 'generate_slip_gaji'])->name('periode-cutoff.generate-slip-gaji');
         Route::get('/periode-cutoff/excel/{periode_cutoff_id}', [PeriodeCutoffController::class, 'excel'])->name('periode-cutoff.excel');
 
         Route::get('/hari-libur', [HariLiburController::class, 'index'])->name('hari-libur.index');

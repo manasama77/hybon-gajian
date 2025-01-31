@@ -76,8 +76,10 @@ class DataKehadiranController extends Controller
 
         $cek_hari_libur = HariLibur::where('tanggal', Carbon::now()->toDateString())->first();
 
-        if ($cek_hari_libur) {
-            return redirect()->route('data-kehadiran.index')->withErrors('Hari ini adalah hari libur.');
+        if (Auth::user()->hasRole('karyawan')) {
+            if ($cek_hari_libur) {
+                return redirect()->route('data-kehadiran.index')->withErrors('Hari ini adalah hari libur.');
+            }
         }
 
         $karyawans = Karyawan::query();
@@ -121,8 +123,10 @@ class DataKehadiranController extends Controller
 
             $check_hari_libur = HariLibur::where('tanggal', Carbon::now()->toDateString())->first();
 
-            if ($check_hari_libur) {
-                throw new Exception('Hari ini adalah hari libur.');
+            if (Auth::user()->hasRole('karyawan')) {
+                if ($check_hari_libur) {
+                    throw new Exception('Hari ini adalah hari libur.');
+                }
             }
 
             $check = DataKehadiran::where('karyawan_id', $request->karyawan_id)

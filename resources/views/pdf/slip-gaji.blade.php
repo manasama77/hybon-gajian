@@ -51,6 +51,10 @@
             font-style: normal;
         }
 
+        .page-break {
+            page-break-after: always;
+        }
+
         /* Start Reset CSS */
         * {
             margin: 0;
@@ -429,6 +433,85 @@
             </div>
         </div>
     </div>
+
+    <div class="page-break"></div>
+
+    <div class="container">
+        <h1>Data Kehadiran</h1>
+        <table border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <td style="text-align: center; font-weight: 700;">#</td>
+                    <td style="text-align: center; font-weight: 700;">Tanggal</td>
+                    <td style="text-align: center; font-weight: 700;">Keterangan</td>
+                    <td style="text-align: center; font-weight: 700;">Menit Terlambat</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($arr_kehadiran as $ak)
+                    @php
+                        $color = '';
+                        if ($ak['menit_terlambat'] > 0) {
+                            $color = 'background-color: orange;';
+                        } elseif ($ak['status'] == 'absen') {
+                            $color = 'background-color: red;';
+                        } elseif (in_array($ak['status'], ['cuti', 'sakit dengan surat dokter', 'ijin potong gaji'])) {
+                            $color = 'background-color: yellow;';
+                        } elseif (in_array($ak['status'], ['libur'])) {
+                            $color = 'background-color: grey;';
+                        } elseif (in_array($ak['status'], ['hadir'])) {
+                            $color = 'background-color: white;';
+                        } else {
+                            $color = 'background-color: green;';
+                        }
+                    @endphp
+                    <tr>
+                        <td style="text-align: center; {{ $color }}">{{ $loop->iteration }}</td>
+                        <td style="text-align: center; {{ $color }}">{{ $ak['tanggal'] }}</td>
+                        <td style="text-align: center; {{ $color }}">{{ ucfirst($ak['status']) }}</td>
+                        <td style="text-align: center; {{ $color }}">
+                            {{ $ak['menit_terlambat'] ? $ak['menit_terlambat'] . ' menit' : null }}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if (count($arr_lembur) > 0)
+        <div class="page-break"></div>
+
+        <div class="container">
+            <h1>Data Lembur</h1>
+            <table border="1" cellpadding="5">
+                <thead>
+                    <tr>
+                        <td style="text-align: center; font-weight: 700;">#</td>
+                        <td style="text-align: center; font-weight: 700;">Tanggal</td>
+                        <td style="text-align: center; font-weight: 700;">Menit Lembur</td>
+                        <td style="text-align: center; font-weight: 700;">Start</td>
+                        <td style="text-align: center; font-weight: 700;">End</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($arr_lembur as $ar)
+                        <tr>
+                            <td style="text-align: center;">{{ $loop->iteration }}</td>
+                            <td style="text-align: center;">{{ $ar['tanggal'] }}</td>
+                            <td style="text-align: center;">{{ $ar['status'] }}</td>
+                            <td style="text-align: center;">{{ $ar['start'] }}</td>
+                            <td style="text-align: center;">{{ $ar['end'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+
+            </table>
+
+        </div>
+    @endif
+
 </body>
 
 </html>

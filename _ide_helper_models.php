@@ -360,7 +360,7 @@ namespace App\Models{
  * @property int $prorate
  * @property int $total_jam_lembur
  * @property int $total_menit_lembur
- * @property int $gaji_lembur
+ * @property string $gaji_lembur
  * @property string $potongan_kasbon
  * @property string $take_home_pay
  * @property int $take_home_pay_rounded

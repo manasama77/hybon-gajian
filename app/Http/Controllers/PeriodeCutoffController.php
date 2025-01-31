@@ -14,9 +14,11 @@ use App\Models\DataKehadiran;
 use App\Models\PeriodeCutoff;
 use Illuminate\Support\Carbon;
 use App\Exports\SlipGajiExport;
+use App\Models\HariLibur;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\CarbonPeriod;
 
 class PeriodeCutoffController extends Controller
 {
@@ -137,8 +139,8 @@ class PeriodeCutoffController extends Controller
 
             $kehadiran_start = $periode_cutoffs->kehadiran_start;
             $kehadiran_end   = $periode_cutoffs->kehadiran_end;
-            $lembur_start    = $periode_cutoffs->lembur_start;
-            $lembur_end      = $periode_cutoffs->lembur_end;
+            $lembur_start    = Carbon::parse($periode_cutoffs->lembur_start->toDateString() . ' 00:00:00');
+            $lembur_end      = Carbon::parse($periode_cutoffs->lembur_end->toDateString() . ' 23:59:59');
             $hari_kerja      = $periode_cutoffs->hari_kerja;
 
             $karyawans = Karyawan::with('departement')
@@ -163,6 +165,76 @@ class PeriodeCutoffController extends Controller
                 $potongan_ijin   = 0;
                 $potongan_kasbon = 0;
                 $gaji_kehadiran  = 0;
+                $arr_kehadiran   = [];
+                $arr_lembur      = [];
+
+                $periode_kehadiran = new CarbonPeriod($kehadiran_start, '1 day', $kehadiran_end);
+                foreach ($periode_kehadiran as $date) {
+                    $tanggal_x    = $date->format('Y-m-d');
+                    $hari_libur_x = HariLibur::where('tanggal', $tanggal_x)->first();
+                    $data_kehadiran_x = DataKehadiran::where('karyawan_id', $karyawan_id)
+                        ->where('periode_cutoff_id', $periode_cutoff_id)
+                        ->where('tanggal', $tanggal_x)
+                        ->whereNotNull('clock_in')
+                        ->first();
+                    $data_ijin_x = DataIjin::where('karyawan_id', $karyawan_id)
+                        ->where('from_date', '<=', $tanggal_x)
+                        ->where('to_date', '>=', $tanggal_x)
+                        ->first();
+
+
+                    if ($date->isSunday()) {
+                        array_push($arr_kehadiran, [
+                            'tanggal'         => $tanggal_x,
+                            'status'          => 'libur',
+                            'menit_terlambat' => null,
+                        ]);
+                    } elseif ($hari_libur_x) {
+                        array_push($arr_kehadiran, [
+                            'tanggal'         => $tanggal_x,
+                            'status'          => $hari_libur_x->keterangan,
+                            'menit_terlambat' => null,
+                        ]);
+                    } elseif ($data_ijin_x) {
+                        array_push($arr_kehadiran, [
+                            'tanggal'         => $tanggal_x,
+                            'status'          => $data_ijin_x->tipe_ijin,
+                            'menit_terlambat' => null,
+                        ]);
+                    } elseif ($data_kehadiran_x) {
+                        $menit_terlambat_x = ($data_kehadiran_x->menit_terlambat > 0) ? $data_kehadiran_x->menit_terlambat : null;
+                        array_push($arr_kehadiran, [
+                            'tanggal'         => $tanggal_x,
+                            'status'          => 'hadir',
+                            'menit_terlambat' => $menit_terlambat_x
+                        ]);
+                    } else {
+                        array_push($arr_kehadiran, [
+                            'tanggal'         => $tanggal_x,
+                            'status'          => 'absen',
+                            'menit_terlambat' => null,
+                        ]);
+                    }
+                }
+
+                $periode_lembur = new CarbonPeriod($lembur_start, '1 day', $lembur_end);
+                foreach ($periode_lembur as $date) {
+                    $tanggal_x    = $date->format('Y-m-d');
+                    $data_lembur_x = DataLembur::where('karyawan_id', $karyawan_id)
+                        ->whereDate('overtime_in', $tanggal_x)
+                        ->where('is_approved', true)
+                        ->first();
+
+
+                    if ($data_lembur_x) {
+                        array_push($arr_lembur, [
+                            'tanggal'         => $tanggal_x,
+                            'status'          => $data_lembur_x->menit_lembur . ' menit',
+                            'start'           => $data_lembur_x->overtime_in,
+                            'end'             => $data_lembur_x->overtime_out,
+                        ]);
+                    }
+                }
 
                 $data_kehadiran = DataKehadiran::where('karyawan_id', $karyawan_id)
                     ->where('periode_cutoff_id', $periode_cutoff_id)
@@ -170,7 +242,8 @@ class PeriodeCutoffController extends Controller
                     ->whereNotNull('clock_in')
                     ->whereNotIn('tanggal', function ($query) {
                         $query->select('tanggal')
-                            ->from('hari_liburs');
+                            ->from('hari_liburs')
+                            ->whereNull('deleted_at');
                     });
 
                 $data_cuti = DataIjin::where('karyawan_id', $karyawan_id)
@@ -198,6 +271,7 @@ class PeriodeCutoffController extends Controller
                     ->whereDate('overtime_in', '<=', $lembur_end)
                     ->where('is_approved', true)
                     ->get();
+                // dd($data_lemburs);
 
                 $total_jam_lembur   = 0;
                 $total_menit_lembur = 0;
@@ -225,6 +299,14 @@ class PeriodeCutoffController extends Controller
                 $potongan_ijin   = round($gaji_harian * $total_hari_ijin, 2);
 
                 $total_hari_tidak_kerja = $hari_kerja - $total_hari_kerja - $total_hari_ijin - $total_cuti - $total_sakit;
+                // dd(
+                //     "hari kerja: " . $hari_kerja,
+                //     "total hari kerja: " . $total_hari_kerja,
+                //     "total_hari_ijin: " . $total_hari_ijin,
+                //     "total cuti: " . $total_cuti,
+                //     "total sakit: " . $total_sakit,
+                //     "total hari tidak kerja: " . $total_hari_tidak_kerja
+                // );
                 $potongan_tidak_kerja   = round($gaji_harian * $total_hari_tidak_kerja, 2);
 
                 $prorate = true;
@@ -299,8 +381,10 @@ class PeriodeCutoffController extends Controller
 
                 $title = "Slip Gaji $name - $departement - " . $kehadiran_start->translatedFormat('d M y') . " s/d " . $kehadiran_end->translatedFormat('d M y');
                 $pdf  = Pdf::loadView('pdf.slip-gaji', [
-                    'title' => $title,
-                    'data'  => $slip,
+                    'title'         => $title,
+                    'data'          => $slip,
+                    'arr_kehadiran' => $arr_kehadiran,
+                    'arr_lembur'    => $arr_lembur
                 ])->setPaper('a4', 'portrait');
                 // return $pdf->stream();
                 $pdf->save(public_path('storage/slip_gaji/' . $nama_file));

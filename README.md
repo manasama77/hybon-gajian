@@ -87,3 +87,8 @@ Jika kamu merasa terbantu dengan aplikasi ini, jangan lupa traktir saya dengan b
 -   **Version 1.1.8**
     -   Penambahan fitur presensi karyawan dari sisi admin
     -   Ordering hari libur berdasarkan tanggal ascending
+-   **Version 1.1.9**
+    -   Dashboard > Perbaikkan Bug perhitungan gaji lembur dikarenakan lembur ditanggal 20 (cutoff lembur akhir) dianggap lembur dari jam clock in karyawan sampai 23.59:59 menyebabkan perhitungan menit lembur membengkak
+    -   Perbaikan bug perhitungan menit lembur pada slip gaji
+    -   Perbaikan bug perhitungan menit lembur pada saat generate excel rekap gaji
+    -   Slip gaji penambahan data kehadiran dan data lembur untuk validasi data gaji

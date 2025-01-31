@@ -33,7 +33,7 @@ class SlipGajiExport implements FromView
             $nama_karyawan = $slip_gaji->karyawan->name;
             $gaji          = ($slip_gaji->tipe_gaji === 'harian') ? $slip_gaji->gaji_kehadiran : $slip_gaji->gaji_pokok;
             $lembur        = $slip_gaji->gaji_lembur;
-            $absensi       = $slip_gaji->potongan_tidak_kerja;
+            $absensi       = ($slip_gaji->tipe_gaji === 'harian') ? 0 : $slip_gaji->potongan_tidak_kerja;
             $keterlambatan = $slip_gaji->potongan_terlambat;
             $ijin          = $slip_gaji->potongan_ijin;
             $kasbon        = $slip_gaji->potongan_kasbon;

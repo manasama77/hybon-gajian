@@ -35,8 +35,8 @@ class DashboardController extends Controller
             $total_hari_kerja  = $periode_cutoff->hari_kerja;
             $kehadiran_start   = $periode_cutoff->kehadiran_start;
             $kehadiran_end     = $periode_cutoff->kehadiran_end;
-            $lembur_start      = $periode_cutoff->lembur_start;
-            $lembur_end        = $periode_cutoff->lembur_end;
+            $lembur_start      = Carbon::parse($periode_cutoff->lembur_start->toDateString() . ' 00:00:00');
+            $lembur_end        = Carbon::parse($periode_cutoff->lembur_end->toDateString() . ' 23:59:59');
 
             // start hitung total lembur karyawan
             $data_lemburs = DataLembur::approved()
