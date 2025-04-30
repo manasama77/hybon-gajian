@@ -1,0 +1,253 @@
+Table users {
+    id int [pk, increment]
+    email varchar
+    name varchar
+    password varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table roles {
+    id int [pk, increment]
+    name varchar
+    guard_name varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table hari_liburs {
+    id int [pk, increment]
+    tanggal date
+    keterangan varchar
+    created_at timestamp
+    updated_at timestamp
+    deleted_at timestamp
+}
+
+Table departements {
+    id int [pk, increment]
+    name varchar
+    created_at timestamp
+    updated_at timestamp
+    deleted_at timestamp
+}
+
+Table karyawans {
+    id int [pk, increment]
+    user_id int [ref: > users.id]
+    departement_id int [ref: > departements.id]
+    name varchar
+    join_date date
+    tipe_gaji varchar
+    gaji_pokok varchar
+    gaji_harian varchar
+    whatsapp varchar
+    total_cuti int
+    sisa_cuti int
+    is_active bool
+    created_at timestamp
+    updated_at timestamp
+    deleted_at timestamp
+}
+
+Table periode_cutoffs {
+    id int [pk, increment]
+    kehadiran_start date
+    kehadiran_end date
+    lembur_start date
+    lembur_end date
+    hari_kerja int
+    is_active bool
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table data_kehadirans {
+    id int [pk, increment]
+    karyawan_id int [ref: > karyawans.id]
+    periode_cutoff_id int [ref: > periode_cutoffs.id]
+    tanggal date
+    clock_in time
+    clock_out time
+    jam_terlambat int
+    menit_terlambat int
+    foto_in varchar
+    foto_out varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table data_lemburs {
+    id int [pk, increment]
+    karyawan_id int [ref: > karyawans.id]
+    tanggal date
+    jam_lembur int
+    menit_lembur int
+    foto_in varchar
+    foto_out varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table data_ijins {
+    id int [pk, increment]
+    karyawan_id int [ref: > karyawans.id]
+    periode_cutoff_id int [ref: > periode_cutoffs.id]
+    tanggal date
+    tipe_ijin varchar
+    jam_ijin int
+    foto_in varchar
+    foto_out varchar
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table slip_gajis {
+    id int [pk, increment]
+    karyawan_id int [ref: > karyawans.id]
+    periode_cutoff_id int [ref: > periode_cutoffs.id]
+    tipe_gaji varchar
+    gaji_pokok int
+    gaji_harian decimal
+    total_hari_kerja int
+    gaji_kehadiran decimal
+    total_cuti int
+    total_sakit int
+    total_hari_tidak_kerja int
+    potongan_tidak_kerja decimal
+    total_hari_ijin int
+    potongan_ijin decimal
+    jam_terlambat int
+    menit_terlambat int
+    total_menit_lembur int
+    potongan_terlambat decimal
+    prorate bool
+    total_jam_lembur int
+    gaji_lembur decimal
+    take_home_pay decimal
+    take_home_pay_rounded int
+    file_pdf varchar
+    potongan_kasbon decimal 
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table data_kasbons {
+    id int [pk, increment]
+    karyawan_id int [ref: > karyawans.id]
+    periode_cutoff_id int [ref: > periode_cutoffs.id]
+    tanggal date
+    jumlah int
+    foto varchar
+    created_at timestamp
+    updated_at timestamp
+    deleted_at timestamp
+}
+
+Table request_kehadirans {
+    id int [pk, increment]
+    karyawan_id int [ref: > karyawans.id]
+    periode_cutoff_id int [ref: > periode_cutoffs.id]
+    tanggal date
+    clock_in time
+    clock_out time
+    jam_terlambat int
+    menit_terlambat int
+    alasan varchar
+    foto_in varchar
+    foto_out varchar
+    is_approved bool
+    approved_by int [ref: > users.id]
+    approved_at timestamp
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table seq_work_orders {
+    id int [pk, increment]
+    no int
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table work_order {
+  nomor_wo varchar [pk]
+  tanggal_wo date
+  nama_customer varchar
+  whatsapp varchar
+  nama_barang varchar
+  layer_tengah varchar
+  layer_terakhir varchar
+  motif varchar
+  clear varchar
+  target_cl1 date
+  target_cl2 date
+  target_selesai date
+  is_molding boolean
+  status_pembayaran varchar
+  status_pengerjaan varchar
+  no_resi varchar [note: 'Optional']
+}
+
+Table task {
+  id int [pk, increment]
+  work_order_id varchar [ref: > work_order.nomor_wo]
+  task_type enum('production', 'creative')
+  department varchar
+  task_name varchar
+  progress_status boolean
+  parent_task_id int [ref: > task.id] [note: 'For creative task reference']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sub_task {
+  id int [pk, increment]
+  task_id int [ref: > task.id]
+  sub_task_name varchar
+  progress_status boolean
+  uses_creative_service boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Enum department {
+  moulding
+  infuse
+  pra_finishing
+  pasca_finishing
+  back_office
+  creative
+}
+
+Enum task_name {
+  // Moulding
+  beli_master
+  custom_master
+  buat_molding
+  repair_molding
+
+  // Infuse
+  layup_layer_1
+  infus
+
+  // Pra Finishing
+  demoulding
+  potong
+  amplas_tepi
+
+  // Pasca Finishing
+  press_barang
+  amplas_antara_clear
+  clear_lapisan_flow_kedua_doff
+  amplas_poles
+  poles
+
+  // Back Office
+  collection
+  packing
+  kirim
+
+  // Creative
+  creative_task
+}

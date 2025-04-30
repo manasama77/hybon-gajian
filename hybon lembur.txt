@@ -1,0 +1,44 @@
+potongan keterlambatan 15.000 / jam
+toleransi keterlambatan 15 menit
+masuk jam 9.00
+pulang jam 6.00
+lembur 20.000 / jam
+yang penting absen masuk, absen keluar ga penting
+
+gaji pokok
+26 hari masuk
+cutoff 21 ke 20
+senin sampai sabtu
+nanti ada form untuk input closing cutoff dan open cutoff
+lemburan 21 nov sampai 20 dec
+masuk kerja dari 1 sampai akhir bulan aktif
+
+
+
+column : 
+1. Total hari kerja
+2. Lembur Berapa jam (21-20)
+3. Telat Berapa Jam (diluar toleransi)
+4. Gapok
+
+
+Data Kehadiran dan Lembur
+- Hari Kerja
+- Presensi
+- Absensi
+- Ijin
+- Sakit
+- Keterlambatan
+- Lembur
+
+Penerimaan
+- Gaji Pokok
+- Lembur
+
+Potongan
+- Absensi
+- Keterlambatan
+- Ijin
+- Sakit
+
+Take Home Pay

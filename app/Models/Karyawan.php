@@ -21,6 +21,8 @@ class Karyawan extends Model
         'total_cuti',
         'sisa_cuti',
         'is_active',
+        'no_rekening',
+        'bank',
     ];
 
     protected $casts = [

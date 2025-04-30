@@ -144,6 +144,30 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="no_rekening"
+                            class="dark:text-white block mb-2 text-sm font-medium text-gray-900">No
+                            Rekening</label>
+                        <input type="number" name="no_rekening" id="no_rekening"
+                            placeholder="Masukkan No No Rekening"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('no_rekening') border-red-500 @enderror"
+                            value="{{ $karyawan->no_rekening }}" required />
+                        @error('no_rekening')
+                            <p class="text-xs italic text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="bank"
+                            class="dark:text-white block mb-2 text-sm font-medium text-gray-900">Bank</label>
+                        <input type="text" name="bank" id="bank" placeholder="Masukkan Nama Bank"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('bank') border-red-500 @enderror"
+                            value="{{ $karyawan->bank }}" required />
+                        @error('bank')
+                            <p class="text-xs italic text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
                         <label for="is_active" class="dark:text-white block mb-2 text-sm font-medium text-gray-900">
                             Status
                         </label>

@@ -67,6 +67,8 @@ class KaryawanController extends Controller
                 'total_cuti'     => ['nullable', 'numeric'],
                 'sisa_cuti'      => ['nullable', 'numeric'],
                 'whatsapp'       => ['required', 'string', 'max:255'],
+                'no_rekening'    => ['required'],
+                'bank'           => ['required'],
             ]);
 
             $user = User::createOrFirst([
@@ -96,6 +98,8 @@ class KaryawanController extends Controller
                 'total_cuti'     => $request->total_cuti ?? 0,
                 'sisa_cuti'      => $request->sisa_cuti ?? 0,
                 'is_active'      => true,
+                'no_rekening'    => $request->no_rekening,
+                'bank'           => $request->bank,
             ]);
 
             DB::commit();
@@ -140,6 +144,8 @@ class KaryawanController extends Controller
             'sisa_cuti'      => ['nullable', 'numeric'],
             'whatsapp'       => ['required', 'string', 'max:255'],
             'is_active'      => ['required', 'boolean'],
+            'no_rekening'    => ['required'],
+            'bank'           => ['required'],
         ]);
 
         $karyawan->update([
@@ -152,6 +158,8 @@ class KaryawanController extends Controller
             'total_cuti'     => $request->total_cuti ?? 0,
             'sisa_cuti'      => $request->sisa_cuti ?? 0,
             'whatsapp'       => $request->whatsapp,
+            'no_rekening'    => $request->no_rekening,
+            'bank'           => $request->bank,
             'is_active'      => $request->is_active,
         ]);
 

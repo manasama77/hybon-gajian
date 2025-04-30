@@ -1,19 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TestController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DataIjinController;
-use App\Http\Controllers\KaryawanController;
-use App\Http\Controllers\SlipGajiController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HariLiburController;
+use App\Http\Controllers\DataIjinController;
 use App\Http\Controllers\DataKasbonController;
+use App\Http\Controllers\DataKehadiranController;
 use App\Http\Controllers\DataLemburController;
 use App\Http\Controllers\DepartementController;
-use App\Http\Controllers\DataKehadiranController;
+use App\Http\Controllers\HariLiburController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\PeriodeCutoffController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestKehadiranController;
+use App\Http\Controllers\SlipGajiController;
+use App\Http\Controllers\TestController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ Route::middleware([
         Route::put('/periode-cutoff/{periode_cutoff}', [PeriodeCutoffController::class, 'update'])->name('periode-cutoff.update');
         Route::delete('/periode-cutoff/{periode_cutoff}', [PeriodeCutoffController::class, 'destroy'])->name('periode-cutoff.destroy');
         Route::post('/periode-cutoff/generate-slip-gaji', [PeriodeCutoffController::class, 'generate_slip_gaji'])->name('periode-cutoff.generate-slip-gaji');
-        // Route::get('/periode-cutoff/generate-slip-gaji', [PeriodeCutoffController::class, 'generate_slip_gaji'])->name('periode-cutoff.generate-slip-gaji');
+        Route::get('/periode-cutoff/generate-slip-gaji', [PeriodeCutoffController::class, 'generate_slip_gaji'])->name('periode-cutoff.generate-slip-gaji');
         Route::get('/periode-cutoff/excel/{periode_cutoff_id}', [PeriodeCutoffController::class, 'excel'])->name('periode-cutoff.excel');
 
         Route::get('/hari-libur', [HariLiburController::class, 'index'])->name('hari-libur.index');
@@ -117,4 +117,4 @@ Route::get('/test', [TestController::class, 'test']);
 Route::get('/test-keterlambatan', [TestController::class, 'repair_keterlambatan']);
 Route::get('/test-lembur', [TestController::class, 'repair_lembur']);
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

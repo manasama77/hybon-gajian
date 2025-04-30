@@ -110,6 +110,16 @@
                                         {{ $karyawan->status_karyawan }}
                                     </td>
                                 </tr>
+
+                                @if ($karyawan->no_rekening && $karyawan->bank)
+                                    <tr>
+                                        <td class="px-3 py-2">Rekening</td>
+                                        <td class="px-3 py-2">:</td>
+                                        <td class="px-3 py-2">
+                                            {{ $karyawan->no_rekening }} ({{ strtoupper($karyawan->bank) }})
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
 

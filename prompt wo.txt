@@ -1,0 +1,46 @@
+buatkan schema dbml untuk work order beserta dengan task dari "production" dan "creative".
+untuk work order berisikan
+- nomor wo
+- tanggal wo
+- nama customer
+- whatsapp
+- nama barang
+- layer tengah
+- layer terakhir
+- motif
+- clear
+- target cl1
+- target cl2
+- target selesai
+- is molding
+- status pembayaran
+- status pengerjaan
+- no resi (opsional)
+
+untuk task "production" jika is molding === true maka starting point task akan dimulai dari moulding, sisanya akan berisikan task untuk masing masing departement yang dimana tasknya pasti (ada 1 yang opsional) dan sertakan juga untuk progress status disetiap task dan sub task dengan tipe boolean, diantaranya:
+- moulding
+    - beli master
+    - custom master
+    - buat molding
+    - repair molding
+- infuse
+    - layup layer 1
+    - infus
+- pra finishing
+    - demoulding
+    - potong
+    - amplas tepi
+- pasca finishing
+    - press barang (opsional)
+    - amplas antara clear
+    - clear lapisan flow kedua/doff
+    - amplas poles
+    - poles
+- back office
+    - collection
+    - packing
+    - kirim
+
+
+untuk setiap sub task memiiki opsi untuk menggunakan jasa departement "creative"
+jika opsi menggunakan creative dipilih maka akan membuat task khusus departement creative (hanya 1 task dan tidak memiliki sub task) sertakan juga untuk progress status dengan tipe boolean
