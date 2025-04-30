@@ -267,7 +267,11 @@
                                         </p>
                                         <p class="small-info">
                                             Rp. {{ number_format($data->gaji_pokok, 0, ',', '.') }} /
-                                            {{ $data->periode_cutoff->hari_kerja }} Hari
+                                            @if ($data->tipe_gaji === 'bulanan')
+                                                24 Hari
+                                            @else
+                                                {{ $data->periode_cutoff->hari_kerja }} Hari
+                                            @endif
                                         </p>
                                     @endif
                                 </td>

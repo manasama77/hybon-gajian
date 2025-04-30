@@ -212,7 +212,7 @@ class PeriodeCutoffController extends Controller
                 $gaji_harian = $karyawan->gaji_harian;
 
                 if ($tipe_gaji === 'bulanan') {
-                    $gaji_harian = round($gaji_pokok / $hari_kerja, 2);
+                    $gaji_harian = round($gaji_pokok / 24, 2);
                 }
 
                 $total_cuti      = 0;
