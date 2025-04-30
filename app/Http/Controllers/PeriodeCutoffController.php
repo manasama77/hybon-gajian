@@ -212,7 +212,8 @@ class PeriodeCutoffController extends Controller
                 $gaji_harian = $karyawan->gaji_harian;
 
                 if ($tipe_gaji === 'bulanan') {
-                    $gaji_harian = round($gaji_pokok / 24, 2);
+                    // $gaji_harian = round($gaji_pokok / 24, 2);
+                    $gaji_harian = floor($gaji_pokok / 24);
                 }
 
                 $total_cuti      = 0;
@@ -320,7 +321,8 @@ class PeriodeCutoffController extends Controller
                 $jam_terlambat                = (int) $data_kehadiran->sum('jam_terlambat');
                 $menit_terlambat              = (int) $data_kehadiran->sum('menit_terlambat');
                 $potongan_terlambat_per_menit = (float) config('app.potongan_terlambat') / 60;
-                $potongan_terlambat           = round($potongan_terlambat_per_menit * $menit_terlambat, 2);
+                // $potongan_terlambat           = round($potongan_terlambat_per_menit * $menit_terlambat, 2);
+                $potongan_terlambat           = floor($potongan_terlambat_per_menit * $menit_terlambat);
 
                 $data_lemburs = DataLembur::where('karyawan_id', $karyawan_id)
                     ->whereDate('overtime_in', '>=', $lembur_start)
@@ -343,7 +345,8 @@ class PeriodeCutoffController extends Controller
                         $total_menit_lembur += ceil($overtime_in->diffInMinutes(date: $overtime_out));
                     }
                 }
-                $gaji_lembur = round($total_menit_lembur * (config('app.lembur_rate') / 60), 2);
+                // $gaji_lembur = round($total_menit_lembur * (config('app.lembur_rate') / 60), 2);
+                $gaji_lembur = floor($total_menit_lembur * (config('app.lembur_rate') / 60));
 
                 $data_ijin = DataIjin::where('karyawan_id', $karyawan_id)
                     ->where('from_date', '>=', $kehadiran_start)
@@ -352,7 +355,8 @@ class PeriodeCutoffController extends Controller
                     ->where('tipe_ijin', 'ijin potong gaji');
 
                 $total_hari_ijin = (int) $data_ijin->sum('total_hari');
-                $potongan_ijin   = round($gaji_harian * $total_hari_ijin, 2);
+                // $potongan_ijin   = round($gaji_harian * $total_hari_ijin, 2);
+                $potongan_ijin   = floor($gaji_harian * $total_hari_ijin);
 
                 $total_hari_tidak_kerja = $hari_kerja - $total_hari_kerja - $total_hari_ijin - $total_cuti - $total_sakit;
                 // dd(
@@ -363,7 +367,8 @@ class PeriodeCutoffController extends Controller
                 //     "total sakit: " . $total_sakit,
                 //     "total hari tidak kerja: " . $total_hari_tidak_kerja
                 // );
-                $potongan_tidak_kerja   = round($gaji_harian * $total_hari_tidak_kerja, 2);
+                // $potongan_tidak_kerja   = round($gaji_harian * $total_hari_tidak_kerja, 2);
+                $potongan_tidak_kerja   = floor($gaji_harian * $total_hari_tidak_kerja);
 
                 $prorate = true;
 
@@ -377,21 +382,27 @@ class PeriodeCutoffController extends Controller
 
                 $potongan_kasbon = (float) $data_kasbon;
 
-                $take_home_pay = round($gaji_pokok + $gaji_lembur - $potongan_tidak_kerja - $potongan_terlambat - $potongan_ijin - $potongan_kasbon, 2);
+                // $take_home_pay = round($gaji_pokok + $gaji_lembur - $potongan_tidak_kerja - $potongan_terlambat - $potongan_ijin - $potongan_kasbon, 2);
+                $take_home_pay = floor($gaji_pokok + $gaji_lembur - $potongan_tidak_kerja - $potongan_terlambat - $potongan_ijin - $potongan_kasbon);
                 if ($tipe_gaji === 'harian') {
-                    $gaji_kehadiran = round($gaji_harian * $total_hari_kerja, 2);
-                    $take_home_pay  = round($gaji_kehadiran + $gaji_lembur - $potongan_terlambat - $potongan_kasbon, 2);
+                    // $gaji_kehadiran = round($gaji_harian * $total_hari_kerja, 2);
+                    // $take_home_pay  = round($gaji_kehadiran + $gaji_lembur - $potongan_terlambat - $potongan_kasbon, 2);
+                    $gaji_kehadiran = floor($gaji_harian * $total_hari_kerja);
+                    $take_home_pay  = floor($gaji_kehadiran + $gaji_lembur - $potongan_terlambat - $potongan_kasbon);
                 }
 
-                $take_home_pay_rounded = $take_home_pay;
-                $hundreds              = round($take_home_pay, -2);
-                $thousands             = round($take_home_pay, -3);
+                $take_home_pay_rounded = floor($take_home_pay);
 
-                if (abs($take_home_pay - $hundreds) < abs($take_home_pay - $thousands)) {
-                    $take_home_pay_rounded = $hundreds;
-                } else {
-                    $take_home_pay_rounded = $thousands;
-                }
+                // $take_home_pay_rounded = $take_home_pay;
+
+                // $hundreds              = round($take_home_pay, -2);
+                // $thousands             = round($take_home_pay, -3);
+
+                // if (abs($take_home_pay - $hundreds) < abs($take_home_pay - $thousands)) {
+                //     $take_home_pay_rounded = $hundreds;
+                // } else {
+                //     $take_home_pay_rounded = $thousands;
+                // }
 
                 $nama_file = Str::slug($kehadiran_start->toDateString() . '-' . $kehadiran_end->toDateString() . '-' . $name . '-' . Carbon::now()->format('Y-m-d')) . ".pdf";
 

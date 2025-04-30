@@ -260,7 +260,7 @@
                                 <td>Gaji Perhari</td>
                                 <td>:</td>
                                 <td>
-                                    Rp {{ number_format($data->gaji_harian, 2, ',', '.') }}<br />
+                                    Rp {{ number_format($data->gaji_harian, 0, ',', '.') }}<br />
                                     @if ($data->karyawan->tipe_gaji == 'bulanan')
                                         <p class="small-info">
                                             (Gaji Pokok / Hari Kerja)
@@ -344,9 +344,9 @@
                                                     </th>
                                                     <td>
                                                         @if ($data->karyawan->tipe_gaji == 'bulanan')
-                                                            Rp {{ number_format($data->gaji_pokok, 2, ',', '.') }}
+                                                            Rp {{ number_format($data->gaji_pokok, 0, ',', '.') }}
                                                         @else
-                                                            Rp {{ number_format($data->gaji_kehadiran, 2, ',', '.') }}
+                                                            Rp {{ number_format($data->gaji_kehadiran, 0, ',', '.') }}
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -355,12 +355,12 @@
                                                         Lembur<br />
                                                         <p class="small-info">
                                                             Rp.
-                                                            {{ number_format(config('app.lembur_rate') / 60, 2, ',', '.') }}
+                                                            {{ number_format(config('app.lembur_rate') / 60, 0, ',', '.') }}
                                                             x
                                                             {{ $data->total_menit_lembur }} Menit
                                                         </p>
                                                     </th>
-                                                    <td>Rp {{ number_format($data->gaji_lembur, 2, ',', '.') }}</td>
+                                                    <td>Rp {{ number_format($data->gaji_lembur, 0, ',', '.') }}</td>
                                                 </tr>
                                             </table>
 
@@ -373,12 +373,12 @@
                                                             Absensi<br />
                                                             <p class="small-info">
                                                                 Rp.
-                                                                {{ number_format($data->gaji_harian, 2, ',', '.') }} x
+                                                                {{ number_format($data->gaji_harian, 0, ',', '.') }} x
                                                                 {{ $data->total_hari_tidak_kerja }} Hari
                                                             </p>
                                                         </th>
                                                         <td>Rp
-                                                            {{ number_format($data->potongan_tidak_kerja, 2, ',', '.') }}
+                                                            {{ number_format($data->potongan_tidak_kerja, 0, ',', '.') }}
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -393,7 +393,7 @@
                                                         </p>
                                                     </th>
                                                     <td>
-                                                        Rp {{ number_format($data->potongan_terlambat, 2, ',', '.') }}
+                                                        Rp {{ number_format($data->potongan_terlambat, 0, ',', '.') }}
                                                     </td>
                                                 </tr>
                                                 @if ($data->karyawan->tipe_gaji == 'bulanan')
@@ -402,11 +402,11 @@
                                                             Ijin<br />
                                                             <p class="small-info">
                                                                 Rp.
-                                                                {{ number_format($data->gaji_harian, 2, ',', '.') }} x
+                                                                {{ number_format($data->gaji_harian, 0, ',', '.') }} x
                                                                 {{ $data->total_hari_ijin }} Hari
                                                             </p>
                                                         </th>
-                                                        <td>Rp {{ number_format($data->potongan_ijin, 2, ',', '.') }}
+                                                        <td>Rp {{ number_format($data->potongan_ijin, 0, ',', '.') }}
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -414,7 +414,7 @@
                                                     <th>
                                                         Kasbon
                                                     </th>
-                                                    <td>Rp {{ number_format($data->potongan_kasbon, 2, ',', '.') }}
+                                                    <td>Rp {{ number_format($data->potongan_kasbon, 0, ',', '.') }}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -432,7 +432,7 @@
             <div class="grand-total">
                 <h2>
                     Take Home Pay:
-                    <span>Rp. {{ number_format($data->take_home_pay, 2, ',', '.') }}</span>
+                    <span>Rp. {{ number_format($data->take_home_pay, 0, ',', '.') }}</span>
                 </h2>
             </div>
         </div>
